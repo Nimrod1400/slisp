@@ -1,5 +1,5 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
-    std::cout << "Hello from slisp!\n";
+    std::cout << "Hello from tests!\n";
 }

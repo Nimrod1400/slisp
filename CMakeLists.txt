@@ -5,3 +5,6 @@ PROJECT(slisp)
 ADD_EXECUTABLE(slisp
 	src/slisp/main.cpp
 )
+ADD_EXECUTABLE(tests
+	src/tests/main.cpp
+)
