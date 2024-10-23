@@ -24,8 +24,7 @@ TEST_CASE("Lexing empty program") {
     }
 }
 
-TEST_CASE("Lexing parenthesis") {
-    // Pretty ugly huh? But kinda useful.
+TEST_CASE("Lexing parenthesis values") {
     Bundle bundle = {
         { "(",
           {
@@ -49,6 +48,40 @@ TEST_CASE("Lexing parenthesis") {
           {
               "(", ")", ")", "(", ")", "(",
               ")", "(", "(", ")", ")",
+          }
+        },
+    };
+
+    for (const auto &pair : bundle) {
+        Lexer lexer { pair.first };
+        for (const auto &output : pair.second) {
+            REQUIRE(lexer.read_lexeme().value == output);
+        }
+    }
+}
+TEST_CASE("Lexing comments values") {
+    Bundle bundle = {
+        { "; test",
+          {
+              "; test",
+          }
+        },
+
+        { "; test\n",
+          {
+              "; test",
+          }
+        },
+
+        { "() ; test\n",
+          {
+              "(", ")", "; test\n",
+          }
+        },
+
+        { "()\n; test\n()\n;test",
+          {
+              "(", ")", "; test", "(", ")", ";test",
           }
         },
     };
