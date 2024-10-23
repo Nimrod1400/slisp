@@ -93,3 +93,39 @@ TEST_CASE("Lexing comments values") {
         }
     }
 }
+
+TEST_CASE("Lexing atoms values") {
+    Bundle bundle = {
+        { "test",
+          {
+              "test",
+          }
+        },
+
+        { "test_1\ntest_2 test_3",
+          {
+              "test_1", "test_2", "test_3",
+          }
+        },
+
+        { "\n3.14159\n",
+          {
+              "3.14159",
+          }
+        },
+
+        { "(define (square x) (* x x))\n",
+          {
+              "(", "define", "(", "square", "x", ")",
+              "(", "*", "x", "x", ")", ")",
+          }
+        },
+    };
+
+    for (const auto &pair : bundle) {
+        Lexer lexer { pair.first };
+        for (const auto &output : pair.second) {
+            REQUIRE(lexer.read_lexeme().value == output);
+        }
+    }
+}
