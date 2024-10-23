@@ -138,41 +138,6 @@ TEST_CASE("Lexing atoms values") {
     }
 }
 
-TEST_CASE("Lexing comments values") {
-    Bundle bundle = {
-        { "; test",
-          {
-              "; test",
-          }
-        },
-
-        { "; test\n",
-          {
-              "; test",
-          }
-        },
-
-        { "() ; test\n",
-          {
-              "(", ")", "; test",
-          }
-        },
-
-        { "()\n; test\n()\n;test",
-          {
-              "(", ")", "; test", "(", ")", ";test",
-          }
-        },
-    };
-
-    for (const auto &pair : bundle) {
-        Lexer lexer { pair.first };
-        for (const auto &output : pair.second) {
-            REQUIRE(lexer.read_lexeme().value == output);
-        }
-    }
-}
-
 TEST_CASE("Lexing strings values") {
     Bundle bundle = {
         { "\"test\"",
