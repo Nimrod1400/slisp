@@ -6,8 +6,8 @@ namespace Slisp::Lexer {
     Lexer::Lexer(const std::string &input) : m_input { input },
                                              m_it { m_input.cbegin() },
                                              m_prev_lexeme { read_lexeme() },
-                                             m_row { 0 },
-                                             m_col { 0 } {
+                                             m_row { 1 },
+                                             m_col { 1 } {
         reset_position();
     }
 
@@ -17,7 +17,7 @@ namespace Slisp::Lexer {
         Lexeme out {
             m_row,
             m_col,
-            std::string_view { m_it, m_it + 1 }
+            std::string_view { m_it, m_it + len }
         };
 
         m_col += len;
@@ -27,7 +27,24 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::m_lexicalize_comment() {
-        
+        std::size_t len = 0;
+
+        while (m_it + len != m_input.cend() &&
+               *(m_it + len) != '\n') {
+            len += 1;
+        }
+
+        Lexeme out {
+            m_row,
+            m_col,
+            std::string_view { m_it, m_it + len }
+        };
+
+        m_it += len;
+        m_row += 1;
+        m_col = 1;
+
+        return out;
     }
 
     Lexeme Lexer::m_lexicalize_atom() {
