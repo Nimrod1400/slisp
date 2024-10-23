@@ -3,12 +3,60 @@
 #include <string>
 #include "../slisp/lexer.hpp"
 
+#include <stdexcept>
+#include <unordered_map>
+
 using namespace Slisp::Lexer;
 
-TEST_CASE("Lexer is lexing") {
-    std::string input_1 = "()";
-    Lexer lexer_1 { input_1 };
+typedef std::vector<std::pair<std::string, std::vector<std::string>>> Bundle;
 
-    REQUIRE(lexer_1.read_lexeme().value == "(");
-    REQUIRE(lexer_1.read_lexeme().value == ")");
+TEST_CASE("Lexing empty program") {
+    std::vector<std::string> inputs = {
+        "",
+        " ",
+        "\n",
+        "\t \n   ",
+        "  \t \n\n\t     ",
+        "     \n",
+    };
+    for (const auto &input : inputs) {
+        REQUIRE_THROWS_AS(Lexer { input }, std::out_of_range);
+    }
+}
+
+TEST_CASE("Lexing parenthesis") {
+    // Pretty ugly huh? But kinda useful.
+    Bundle bundle = {
+        { "(",
+          {
+              "(",
+          }
+        },
+
+        { "(((",
+          {
+              "(", "(", "(",
+          }
+        },
+
+        { ")))",
+          {
+              ")", ")", ")",
+          }
+        },
+
+        { "())()()(())",
+          {
+              "(", ")", ")", "(", ")", "(",
+              ")", "(", "(", ")", ")",
+          }
+        },
+    };
+
+    for (const auto &pair : bundle) {
+        Lexer lexer { pair.first };
+        for (const auto &output : pair.second) {
+            REQUIRE(lexer.read_lexeme().value == output);
+        }
+    }
 }

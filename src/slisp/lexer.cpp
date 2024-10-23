@@ -1,5 +1,7 @@
 #include "lexer.hpp"
 
+#include <stdexcept>
+
 namespace Slisp::Lexer {
     Lexer::Lexer(const std::string &input) : m_input { input },
                                              m_it { m_input.cbegin() },
