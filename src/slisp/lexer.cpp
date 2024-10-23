@@ -48,7 +48,28 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::m_lexicalize_atom() {
-        
+        std::size_t len = 0;
+
+        while (m_it + len != m_input.cend() &&
+               *(m_it + len) != ' '  &&
+               *(m_it + len) != '\n' &&
+               *(m_it + len) != '\t' &&
+               *(m_it + len) != ')'  &&
+               *(m_it + len) != '('  &&
+               *(m_it + len) != ';') {
+            len += 1;
+        }
+
+        Lexeme out = {
+            m_row,
+            m_col,
+            std::string_view { m_it, m_it + len },
+        };
+
+        m_it += len;
+        m_col += len;
+
+        return out;
     }
 
     Lexeme Lexer::peek_lexeme() const {
