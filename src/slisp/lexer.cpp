@@ -47,6 +47,14 @@ namespace Slisp::Lexer {
         return out;
     }
 
+    Lexeme Lexer::m_lexicalize_string() {
+        return Lexeme {
+            0,
+            0,
+            "123",
+        };
+    }
+
     Lexeme Lexer::m_lexicalize_atom() {
         std::size_t len = 0;
 
@@ -56,7 +64,8 @@ namespace Slisp::Lexer {
                *(m_it + len) != '\t' &&
                *(m_it + len) != ')'  &&
                *(m_it + len) != '('  &&
-               *(m_it + len) != ';') {
+               *(m_it + len) != ';'  &&
+               *(m_it + len) != '"') {
             len += 1;
         }
 
