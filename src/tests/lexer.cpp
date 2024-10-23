@@ -75,7 +75,7 @@ TEST_CASE("Lexing comments values") {
 
         { "() ; test\n",
           {
-              "(", ")", "; test\n",
+              "(", ")", "; test",
           }
         },
 
