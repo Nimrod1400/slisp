@@ -120,6 +120,13 @@ TEST_CASE("Lexing atoms values") {
               "(", "*", "x", "x", ")", ")",
           }
         },
+
+        { "(\n    atom;comment \n)",
+          {
+              "(", "atom", ";comment ", ")",
+          }
+        },
+
     };
 
     for (const auto &pair : bundle) {
