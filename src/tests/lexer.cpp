@@ -149,7 +149,7 @@ TEST_CASE("Lexing strings values") {
 
         { "\"test\"\n()",
           {
-              "\"test\"",
+              "\"test\"", "(", ")",
           }
         },
 
@@ -158,7 +158,6 @@ TEST_CASE("Lexing strings values") {
               "(", "define", "name", "\"Vadim Shamray\"", ")",
           }
         },
-
         { "(define name\"Vadim Shamray\")",
           {
               "(", "define", "name", "\"Vadim Shamray\"", ")",
