@@ -5,9 +5,11 @@ PROJECT(slisp)
 ADD_EXECUTABLE(slisp
 	src/slisp/main.cpp
 	src/slisp/lexer.cpp
+	src/slisp/exceptions.cpp
 )
 ADD_EXECUTABLE(tests
 	src/slisp/lexer.cpp
+	src/slisp/exceptions.cpp
 
 	src/tests/lexer.cpp
 )

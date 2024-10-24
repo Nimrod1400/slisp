@@ -3,15 +3,18 @@
 
 #include <stdexcept>
 #include <utility>
+#include <cstdint>
 
 namespace Slisp::Exceptions {
+    std::string form_error_message(const std::string &msg,
+                                   std::size_t col,
+                                   std::size_t row);
+
     class Exception : public std::exception {
     public:
-        Exception(std::string message) : m_message { std::move(message) } { }
+        Exception(std::string message);
 
-        const char* what() const noexcept override {
-            return m_message.c_str();
-        }
+        const char* what() const noexcept override;
 
     private:
         std::string m_message;
@@ -20,12 +23,12 @@ namespace Slisp::Exceptions {
     
     class Eof : public Exception {
     public:
-        Eof(const std::string &message) : Exception { message } { }
+        Eof(const std::string &message);
     };
 
-    class UnmatchedQuotationMark : public Exception {
+    class UnmatchedQuote : public Exception {
     public:
-        UnmatchedQuotationMark(const std::string &message) : Exception { message } { }
+        UnmatchedQuote(const std::string &message);
     };
 }
 
