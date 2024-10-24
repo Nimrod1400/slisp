@@ -7,10 +7,7 @@
 namespace Slisp::Lexer {
     class Lexeme {
     public:
-        Lexeme(std::size_t row, std::size_t col, std::string_view value) :
-            row { row },
-            col { col },
-            value { value } { }
+        Lexeme(std::size_t row, std::size_t col, std::string_view value);
 
         std::size_t row;
         std::size_t col;

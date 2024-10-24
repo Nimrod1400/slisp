@@ -1,6 +1,6 @@
 #include "lexer.hpp"
 
-#include <stdexcept>
+#include "exceptions.hpp"
 
 namespace Slisp::Lexer {
     Lexer::Lexer(const std::string &input) : m_input { input },
@@ -10,6 +10,11 @@ namespace Slisp::Lexer {
                                              m_col { 1 } {
         reset_position();
     }
+
+    Lexeme::Lexeme(std::size_t row, std::size_t col, std::string_view value) :
+        row { row },
+        col { col },
+        value { value } { }
 
     Lexeme Lexer::m_lexicalize_paren() {
         std::size_t len = 1;
@@ -98,7 +103,7 @@ namespace Slisp::Lexer {
         }
 
         if (m_it == m_input.cend()) {
-            throw std::out_of_range { "EOF reached" };
+            throw Exceptions::Eof { "Uncaught end of file" };
         }
 
         switch (*m_it) {
