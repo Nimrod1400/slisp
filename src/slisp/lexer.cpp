@@ -32,7 +32,7 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::m_lexicalize_comment() {
-        std::size_t len = 0;
+        std::size_t len = 1;
 
         while (m_it + len != m_input.cend() &&
                *(m_it + len) != '\n') {
@@ -53,15 +53,34 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::m_lexicalize_string() {
-        return Lexeme {
-            0,
-            0,
-            "123",
+        std::size_t len = 1;
+
+        while (m_it + len != m_input.cend() &&
+               *(m_it + len) != '\n' &&
+               *(m_it + len) != '"') {
+            len += 1;
+        }
+
+        if (m_it + len == m_input.cend() || *(m_it + len) == '\n') {
+            throw Slisp::Exceptions::UnmatchedQuote {
+                Exceptions::form_error_message("Unmatched quote", m_row, m_col),
+            };
+        }
+
+        Lexeme out {
+            m_row,
+            m_col,
+            std::string_view { m_it, m_it + len + 1}
         };
+
+        m_it += len + 1;
+        m_col += len + 1;
+
+        return out;
     }
 
     Lexeme Lexer::m_lexicalize_atom() {
-        std::size_t len = 0;
+        std::size_t len = 1;
 
         while (m_it + len != m_input.cend() &&
                *(m_it + len) != ' '  &&
@@ -112,6 +131,8 @@ namespace Slisp::Lexer {
             return m_lexicalize_paren();
         case ';':
             return m_lexicalize_comment();
+        case '"':
+            return m_lexicalize_string();
         default:
             return m_lexicalize_atom();
         }
