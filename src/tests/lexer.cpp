@@ -1,9 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <string>
+#include "../slisp/exceptions.hpp"
 #include "../slisp/lexer.hpp"
 
 #include <stdexcept>
+#include <string>
 #include <unordered_map>
 
 using namespace Slisp::Lexer;
@@ -20,7 +21,7 @@ TEST_CASE("Lexing empty program") {
         "     \n",
     };
     for (const auto &input : inputs) {
-        REQUIRE_THROWS_AS(Lexer { input }, std::out_of_range);
+        REQUIRE_THROWS_AS(Lexer { input }, Slisp::Exceptions::Eof);
     }
 }
 
