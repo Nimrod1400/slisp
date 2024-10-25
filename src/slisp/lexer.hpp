@@ -1,6 +1,8 @@
 #ifndef LEXER_HPP_
 #define LEXER_HPP_
 
+#include <iostream>
+#include <optional>
 #include <iterator>
 #include <string_view>
 #include <variant>
@@ -12,6 +14,8 @@ namespace Slisp::Lexer {
         LexemeValue(const std::string str);
 
         bool operator==(const std::string &rhs) const;
+        friend std::ostream &operator<<(std::ostream &os, const LexemeValue &lv);
+
         const char *c_str() const;
     private:
         bool m_owns;
@@ -41,12 +45,21 @@ namespace Slisp::Lexer {
 
         const std::string &m_input;
         std::string::const_iterator m_it;
+
         Lexeme m_prev_lexeme;
 
         Lexeme m_lexicalize_paren();
         Lexeme m_lexicalize_comment();
         Lexeme m_lexicalize_string_literal();
         Lexeme m_lexicalize_atom();
+
+        std::optional<std::string>
+        m_get_escaped(const std::string::const_iterator &it,
+                      std::string::const_iterator &prev_it);
+
+        LexemeValue
+        m_escape_chars_in_str(std::string::const_iterator str_begin,
+                              std::string::const_iterator str_end);
     };
 }
 
