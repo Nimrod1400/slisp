@@ -52,6 +52,7 @@ namespace Slisp::Lexer {
         return out;
     }
 
+
     Lexeme Lexer::m_lexicalize_string() {
         std::size_t len = 1;
 
@@ -105,12 +106,12 @@ namespace Slisp::Lexer {
         return out;
     }
 
-    Lexeme Lexer::peek_lexeme() const {
-        return m_prev_lexeme;
-    }
-
     void Lexer::reset_position() {
         m_it = m_input.cbegin();
+    }
+
+    Lexeme Lexer::peek_lexeme() const {
+        return m_prev_lexeme;
     }
 
     Lexeme Lexer::read_lexeme() {
@@ -137,4 +138,4 @@ namespace Slisp::Lexer {
             return m_lexicalize_atom();
         }
     }
-} // namespace Slisp::Lexer
+}

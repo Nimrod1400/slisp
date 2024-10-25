@@ -1,15 +1,15 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../slisp/exceptions.hpp"
-#include "../slisp/lexer.hpp"
-
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 
+#include "../slisp/exceptions.hpp"
+#include "../slisp/lexer.hpp"
+
 using namespace Slisp::Lexer;
 
-typedef std::vector<std::pair<std::string, std::vector<std::string>>> Bundle;
+using Bundle = std::vector<std::pair<std::string, std::vector<std::string>>>;
 
 TEST_CASE("Lexing empty program") {
     std::vector<std::string> inputs = {
@@ -156,8 +156,9 @@ TEST_CASE("Lexing strings values") {
         { "(define name \"Vadim Shamray\")",
           {
               "(", "define", "name", "\"Vadim Shamray\"", ")",
-          }
+         }
         },
+
         { "(define name\"Vadim Shamray\")",
           {
               "(", "define", "name", "\"Vadim Shamray\"", ")",
