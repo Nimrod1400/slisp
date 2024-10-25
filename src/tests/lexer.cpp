@@ -21,7 +21,7 @@ TEST_CASE("Lexing empty program") {
         "     \n",
     };
     for (const auto &input : inputs) {
-        REQUIRE_THROWS_AS(Lexer { input }, Slisp::Exceptions::Eof);
+        CHECK_THROWS_AS(Lexer { input }, Slisp::Exceptions::Eof);
     }
 }
 
@@ -56,7 +56,7 @@ TEST_CASE("Lexing parenthesis values") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &output : pair.second) {
-            REQUIRE(lexer.read_lexeme().value == output);
+            CHECK(lexer.read_lexeme().value == output);
         }
     }
 }
@@ -91,7 +91,7 @@ TEST_CASE("Lexing comments values") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &output : pair.second) {
-            REQUIRE(lexer.read_lexeme().value == output);
+            CHECK(lexer.read_lexeme().value == output);
         }
     }
 }
@@ -134,7 +134,7 @@ TEST_CASE("Lexing atoms values") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &output : pair.second) {
-            REQUIRE(lexer.read_lexeme().value == output);
+            CHECK(lexer.read_lexeme().value == output);
         }
     }
 }
@@ -181,7 +181,7 @@ TEST_CASE("Lexing strings values") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &output : pair.second) {
-          REQUIRE(lexer.read_lexeme().value == output);
+          CHECK(lexer.read_lexeme().value == output);
         }
     }
 }
