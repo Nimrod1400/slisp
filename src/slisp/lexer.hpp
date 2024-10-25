@@ -45,7 +45,7 @@ namespace Slisp::Lexer {
 
         Lexeme m_lexicalize_paren();
         Lexeme m_lexicalize_comment();
-        Lexeme m_lexicalize_string();
+        Lexeme m_lexicalize_string_literal();
         Lexeme m_lexicalize_atom();
     };
 }

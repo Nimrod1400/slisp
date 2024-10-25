@@ -1,6 +1,5 @@
-#include "lexer.hpp"
-
 #include "exceptions.hpp"
+#include "lexer.hpp"
 
 namespace Slisp::Lexer {
     LexemeValue::LexemeValue(const std::string_view sv) :
@@ -82,8 +81,7 @@ namespace Slisp::Lexer {
         return out;
     }
 
-
-    Lexeme Lexer::m_lexicalize_string() {
+    Lexeme Lexer::m_lexicalize_string_literal() {
         std::size_t len = 1;
 
         while (m_it + len != m_input.cend() &&
@@ -163,7 +161,7 @@ namespace Slisp::Lexer {
         case ';':
             return m_lexicalize_comment();
         case '"':
-            return m_lexicalize_string();
+            return m_lexicalize_string_literal();
         default:
             return m_lexicalize_atom();
         }
