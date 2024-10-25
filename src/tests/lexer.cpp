@@ -141,33 +141,39 @@ TEST_CASE("Lexing atoms values") {
 
 TEST_CASE("Lexing strings values") {
     Bundle bundle = {
-        { "\"test\"",
+        { R"("test")",
           {
-              "\"test\"",
+              R"("test")",
           }
         },
 
-        { "\"test\\n\"\n()",
+        { R"("test" ())",
           {
-              "\"test\n\"", "(", ")",
+              R"("test")", "(", ")",
           }
         },
 
-        { "\"\\ttest\\n\"\n()",
+        { R"("test \n test again" ( ))",
           {
-              "\"\ttest\n\"", "(", ")",
+              "\"test \n test again\"", "(", ")",
           }
         },
 
-        { "(define name \"Vadim Shamray\")",
+        { R"("test \\ test again" ( ))",
           {
-              "(", "define", "name", "\"Vadim Shamray\"", ")",
+              R"("test \ test again")", "(", ")",
+          }
+        },
+
+        { R"((define name "Vadim Shamray"))",
+          {
+              "(", "define", "name", R"("Vadim Shamray")", ")",
          }
         },
 
-        { "(define name\"Vadim Shamray\")",
+        { R"((define name"Vadim Shamray"))",
           {
-              "(", "define", "name", "\"Vadim Shamray\"", ")",
+              "(", "define", "name", R"("Vadim Shamray")", ")",
           }
         },
     };
@@ -175,7 +181,7 @@ TEST_CASE("Lexing strings values") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &output : pair.second) {
-            REQUIRE(lexer.read_lexeme().value == output);
+          REQUIRE(lexer.read_lexeme().value == output);
         }
     }
 }
