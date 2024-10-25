@@ -147,9 +147,15 @@ TEST_CASE("Lexing strings values") {
           }
         },
 
-        { "\"test\"\n()",
+        { "\"test\\n\"\n()",
           {
-              "\"test\"", "(", ")",
+              "\"test\n\"", "(", ")",
+          }
+        },
+
+        { "\"\\ttest\\n\"\n()",
+          {
+              "\"\ttest\n\"", "(", ")",
           }
         },
 
