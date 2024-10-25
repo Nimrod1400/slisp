@@ -3,15 +3,45 @@
 #include "exceptions.hpp"
 
 namespace Slisp::Lexer {
-    Lexer::Lexer(const std::string &input) : m_input { input },
-                                             m_it { m_input.cbegin() },
-                                             m_prev_lexeme { read_lexeme() },
-                                             m_row { 1 },
-                                             m_col { 1 } {
+    LexemeValue::LexemeValue(const std::string_view sv) :
+        m_owns { false },
+        m_value { sv }
+    { }
+
+    LexemeValue::LexemeValue(const std::string str) :
+        m_owns { true },
+        m_value { str }
+    { }
+
+    bool LexemeValue::operator==(const std::string &rhs) const {
+        if (m_owns) {
+            return std::get<std::string>(m_value) == rhs;
+        }
+        else {
+            return std::get<std::string_view>(m_value) == rhs;
+        }
+    }
+
+    const char *LexemeValue::c_str() const {
+        if (m_owns) {
+            return std::get<std::string>(m_value).c_str();
+        }
+        else {
+            return std::get<std::string_view>(m_value).data();
+        }
+    }
+
+    Lexer::Lexer(const std::string &input) :
+        m_input { input },
+        m_it { m_input.cbegin() },
+        m_prev_lexeme { read_lexeme() },
+        m_row { 1 },
+        m_col { 1 }
+    {
         reset_position();
     }
 
-    Lexeme::Lexeme(std::size_t row, std::size_t col, std::string_view value) :
+    Lexeme::Lexeme(std::size_t row, std::size_t col, LexemeValue value) :
         row { row },
         col { col },
         value { value } { }

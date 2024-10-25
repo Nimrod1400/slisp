@@ -1,17 +1,30 @@
 #ifndef LEXER_HPP_
 #define LEXER_HPP_
 
-#include <string_view>
 #include <iterator>
+#include <string_view>
+#include <variant>
 
 namespace Slisp::Lexer {
+    class LexemeValue {
+    public:
+        LexemeValue(const std::string_view sv);
+        LexemeValue(const std::string str);
+
+        bool operator==(const std::string &rhs) const;
+        const char *c_str() const;
+    private:
+        bool m_owns;
+        std::variant<std::string, std::string_view> m_value;
+    };
+    
     class Lexeme {
     public:
-        Lexeme(std::size_t row, std::size_t col, std::string_view value);
+        Lexeme(std::size_t row, std::size_t col, LexemeValue value);
 
         std::size_t row;
         std::size_t col;
-        std::string_view value;
+        LexemeValue value;
     };
 
     class Lexer {
