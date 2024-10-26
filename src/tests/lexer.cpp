@@ -248,11 +248,50 @@ TEST_CASE("Lexemes positions") {
                     { 1, 4 },
                 }
             },
+            {
+                "()\n()",
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 1 },
+                    { 2, 2 }, 
+                }
+            }
         };
 
         for (const auto &pair : bundle) {
             Lexer lexer { pair.first };
-            for (const auto [row, col] : pair.second) {
+            for (const auto &[row, col] : pair.second) {
+                CHECK(lexer.read_lexeme().row == row);
+                CHECK(lexer.peek_lexeme().col == col);
+            }
+        }
+    }
+
+    SECTION("Almost real life data") {
+        PositionBundle bundle = {
+            {
+                "(define (square x)\n\t(* x x))",
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 9 },
+                    { 1, 10 },
+                    { 1, 17 },
+                    { 1, 18 },
+                    { 2, 2 },
+                    { 2, 3 },
+                    { 2, 5 },
+                    { 2, 7 },
+                    { 2, 8 },
+                    { 2, 9 },
+                }
+            },
+        };
+
+        for (const auto &pair : bundle) {
+            Lexer lexer { pair.first };
+            for (const auto &[row, col] : pair.second) {
                 CHECK(lexer.read_lexeme().row == row);
                 CHECK(lexer.peek_lexeme().col == col);
             }
