@@ -152,6 +152,32 @@ TEST_CASE("Lexing atoms") {
     }
 }
 
+TEST_CASE("Lexing erronous strings") {
+    SECTION("Wrong from the start") {
+        std::vector<std::string> inputs = {
+            R"(")",
+            R"( " )",
+        };
+
+        for (const auto &input : inputs) {
+            CHECK_THROWS_AS(Lexer { input }, Slisp::Exceptions::UnmatchedQuote);
+        }
+    }
+
+    SECTION("Wrong later") {
+        std::vector<std::string> inputs = {
+            R"(text ")",
+            R"(text " )",
+            R"(text " \" )",
+        };
+
+        for (const auto &input : inputs) {
+            Lexer lexer { input };
+            CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::UnmatchedQuote);
+        }
+    }
+}
+
 TEST_CASE("Lexing strings") {
     Bundle bundle = {
         { R"("test")",
