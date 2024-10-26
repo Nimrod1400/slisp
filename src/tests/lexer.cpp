@@ -9,7 +9,8 @@
 
 using namespace Slisp::Lexer;
 
-using Bundle = std::vector<std::pair<std::string, std::vector<std::string>>>;
+using ValueBundle = std::vector<std::pair<std::string, std::vector<std::string>>>;
+using PositionBundle = std::vector<std::pair<std::string, std::vector<std::pair<std::size_t, std::size_t>>>>;
 
 TEST_CASE("Lexing empty program") {
     std::vector<std::string> inputs = {
@@ -28,7 +29,7 @@ TEST_CASE("Lexing empty program") {
 }
 
 TEST_CASE("Lexing parenthesis") {
-    Bundle bundle = {
+    ValueBundle bundle = {
         { "(",
           {
               "(",
@@ -66,7 +67,7 @@ TEST_CASE("Lexing parenthesis") {
 }
 
 TEST_CASE("Lexing comments") {
-    Bundle bundle = {
+    ValueBundle bundle = {
         { "; test",
           {
               "; test",
@@ -108,7 +109,7 @@ TEST_CASE("Lexing comments") {
 }
 
 TEST_CASE("Lexing atoms") {
-    Bundle bundle = {
+    ValueBundle bundle = {
         { "test",
           {
               "test",
@@ -181,7 +182,7 @@ TEST_CASE("Lexing erronous strings") {
 }
 
 TEST_CASE("Lexing strings") {
-    Bundle bundle = {
+    ValueBundle bundle = {
         { R"("test")",
           {
               R"("test")",
@@ -232,5 +233,29 @@ TEST_CASE("Lexing strings") {
         }
 
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+    }
+}
+
+TEST_CASE("Lexemes positions") {
+    SECTION("Parenthesis positions") {
+        PositionBundle bundle = {
+            {
+                "()()",
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 },
+                }
+            },
+        };
+
+        for (const auto &pair : bundle) {
+            Lexer lexer { pair.first };
+            for (const auto [row, col] : pair.second) {
+                CHECK(lexer.read_lexeme().row == row);
+                CHECK(lexer.peek_lexeme().col == col);
+            }
+        }
     }
 }
