@@ -221,6 +221,8 @@ namespace Slisp::Lexer {
 
     void Lexer::reset_position() {
         m_it = m_input.cbegin();
+        m_row = 1;
+        m_col = 1;
     }
 
     Lexeme Lexer::peek_lexeme() const {
@@ -228,27 +230,47 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::read_lexeme() {
-        while (m_it != m_input.cend() &&
-               (*m_it == ' ' ||
-                *m_it == '\t' ||
-                *m_it == '\n')) {
-            m_it++;
-        }
+        for (;;) {
+            if (m_it == m_input.cend()) {
+                throw Exceptions::Eof { "Uncaught end of file" };
+            }
 
-        if (m_it == m_input.cend()) {
-            throw Exceptions::Eof { "Uncaught end of file" };
+            if (*m_it == ' ' || *m_it == '\t') {
+                m_col += 1;
+                m_it += 1;
+            }
+            else if (*m_it == '\n') {
+                m_row += 1;
+                m_col = 1;
+                m_it += 1;
+            }
+            else {
+                break;
+            }
         }
 
         switch (*m_it) {
         case '(':
-        case ')':
-            return m_lexicalize_paren();
-        case ';':
-            return m_lexicalize_comment();
-        case '"':
-            return m_lexicalize_string_literal();
-        default:
-            return m_lexicalize_atom();
+        case ')': {
+            Lexeme out = m_lexicalize_paren();
+            m_prev_lexeme = out;
+            return out;
+        }
+        case ';': {
+            Lexeme out = m_lexicalize_comment();
+            m_prev_lexeme = out;
+            return out;
+        }
+        case '"': {
+            Lexeme out = m_lexicalize_string_literal();
+            m_prev_lexeme = out;
+            return out;
+        }
+        default: {
+            Lexeme out = m_lexicalize_atom();
+            m_prev_lexeme = out;
+            return out;
+        }
         }
     }
 }
