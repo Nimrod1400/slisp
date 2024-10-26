@@ -60,6 +60,8 @@ TEST_CASE("Lexing parenthesis") {
         for (const auto &output : pair.second) {
             CHECK(lexer.read_lexeme().value == output);
         }
+
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
 }
 
@@ -101,6 +103,7 @@ TEST_CASE("Lexing comments") {
         for (const auto &output : pair.second) {
             CHECK(lexer.read_lexeme().value == output);
         }
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
 }
 
@@ -141,9 +144,11 @@ TEST_CASE("Lexing atoms") {
 
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
+
         for (const auto &output : pair.second) {
             CHECK(lexer.read_lexeme().value == output);
         }
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
 }
 
@@ -197,5 +202,7 @@ TEST_CASE("Lexing strings") {
         for (const auto &output : pair.second) {
           CHECK(lexer.read_lexeme().value == output);
         }
+
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
 }
