@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "exceptions.hpp"
 #include "lexer.hpp"
 
@@ -51,42 +52,36 @@ namespace Slisp::Lexer {
         value { value } { }
 
     Lexeme Lexer::m_lexicalize_paren() {
-        std::size_t len = 1;
-
         Lexeme out {
             m_row,
             m_col,
-            std::string_view { m_it, m_it + len }
+            std::string { *m_it },
         };
 
+        std::size_t len = 1;
+
         m_col += len;
-        m_it++;
+        m_it += len;
 
         return out;
     }
 
     Lexeme Lexer::m_lexicalize_comment() {
-        std::size_t len = 1;
-
-        while (m_it + len != m_input.cend() &&
-               *(m_it + len) != '\n') {
-            len += 1;
-        }
+        auto comment_end = std::find(m_it + 1, m_input.end(), '\n');
 
         Lexeme out {
             m_row,
             m_col,
-            std::string_view { m_it, m_it + len }
+            std::string_view { m_it, comment_end }
         };
 
-        m_it += len;
+        m_it += std::distance(m_it, comment_end);
         m_row += 1;
         m_col = 1;
 
         return out;
     }
 
-    
     std::optional<std::string>
     Lexer::m_get_escaped(const std::string::const_iterator &it,
                          std::string::const_iterator &prev_it)
@@ -167,15 +162,12 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::m_lexicalize_string_literal() {
-        std::size_t len = 1;
+        constexpr auto is_string_end = [] (char c) {
+            return c == '\n' || c == '"';
+        };
+        auto literal_end = std::find_if(m_it + 1, m_input.cend(), is_string_end);
 
-        while (m_it + len != m_input.cend() &&
-               *(m_it + len) != '\n' &&
-               *(m_it + len) != '"') {
-            len += 1;
-        }
-
-        if (m_it + len == m_input.cend() || *(m_it + len) == '\n') {
+        if (*literal_end != '"') {
             throw Slisp::Exceptions::UnmatchedQuote {
                 Exceptions::form_error_message("Unmatched quote", m_row, m_col),
             };
@@ -184,34 +176,35 @@ namespace Slisp::Lexer {
         Lexeme out {
             m_row,
             m_col,
-            m_escape_chars_in_str(m_it, m_it + len + 1),
+            m_escape_chars_in_str(m_it, literal_end + 1),
         };
 
-        m_col += len + 1;
-        m_it += len + 1;
+        std::size_t len = std::distance(m_it, literal_end) + 1;
+        m_col += len;
+        m_it += len;
 
         return out;
     }
 
     Lexeme Lexer::m_lexicalize_atom() {
-        std::size_t len = 1;
-
-        while (m_it + len != m_input.cend() &&
-               *(m_it + len) != ' '  &&
-               *(m_it + len) != '\n' &&
-               *(m_it + len) != '\t' &&
-               *(m_it + len) != ')'  &&
-               *(m_it + len) != '('  &&
-               *(m_it + len) != ';'  &&
-               *(m_it + len) != '"') {
-            len += 1;
-        }
+        constexpr auto is_atom_end = [] (char c) {
+            return c == ' ' ||
+                c == '\n' ||
+                c == '\t' ||
+                c == ')'  ||
+                c == '('  ||
+                c == ';'  ||
+                c == '"';
+        };
+        auto atom_end = std::find_if(m_it + 1, m_input.cend(), is_atom_end);
 
         Lexeme out = {
             m_row,
             m_col,
-            std::string_view { m_it, m_it + len },
+            std::string_view { m_it, atom_end },
         };
+
+        std::size_t len = std::distance(m_it, atom_end);
 
         m_it += len;
         m_col += len;
