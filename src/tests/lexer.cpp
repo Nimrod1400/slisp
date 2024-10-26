@@ -19,13 +19,15 @@ TEST_CASE("Lexing empty program") {
         "\t \n   ",
         "  \t \n\n\t     ",
         "     \n",
+        "\t\t\t",
     };
+
     for (const auto &input : inputs) {
         CHECK_THROWS_AS(Lexer { input }, Slisp::Exceptions::Eof);
     }
 }
 
-TEST_CASE("Lexing parenthesis values") {
+TEST_CASE("Lexing parenthesis") {
     Bundle bundle = {
         { "(",
           {
@@ -61,11 +63,17 @@ TEST_CASE("Lexing parenthesis values") {
     }
 }
 
-TEST_CASE("Lexing comments values") {
+TEST_CASE("Lexing comments") {
     Bundle bundle = {
         { "; test",
           {
               "; test",
+          }
+        },
+
+        { ";test \"test in quotes\"",
+          {
+              ";test \"test in quotes\"",
           }
         },
 
@@ -75,9 +83,9 @@ TEST_CASE("Lexing comments values") {
           }
         },
 
-        { "() ; test\n",
+        { "() ; test \n",
           {
-              "(", ")", "; test",
+              "(", ")", "; test ",
           }
         },
 
@@ -96,7 +104,7 @@ TEST_CASE("Lexing comments values") {
     }
 }
 
-TEST_CASE("Lexing atoms values") {
+TEST_CASE("Lexing atoms") {
     Bundle bundle = {
         { "test",
           {
@@ -139,7 +147,7 @@ TEST_CASE("Lexing atoms values") {
     }
 }
 
-TEST_CASE("Lexing strings values") {
+TEST_CASE("Lexing strings") {
     Bundle bundle = {
         { R"("test")",
           {
@@ -162,6 +170,12 @@ TEST_CASE("Lexing strings values") {
         { R"("test \\ test again" ( ))",
           {
               R"("test \ test again")", "(", ")",
+          }
+        },
+
+        { R"("test \t test again" ( ))",
+          {
+              "\"test \t test again\"", "(", ")",
           }
         },
 
