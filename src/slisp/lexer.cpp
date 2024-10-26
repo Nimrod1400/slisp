@@ -23,8 +23,23 @@ namespace Slisp::Lexer {
     }
 
     std::ostream &operator<<(std::ostream &os, const LexemeValue &lv) {
-        os << lv.c_str();
+        if (lv.owns()) {
+            os << std::get<std::string>(lv.access());
+        }
+        else {
+            os << std::get<std::string_view>(lv.access());
+        }
+
         return os;
+    }
+
+    bool LexemeValue::owns() const {
+        return m_owns;
+    }
+
+    const std::variant<std::string, std::string_view>
+    &LexemeValue::access() const {
+        return m_value;
     }
 
     const char *LexemeValue::c_str() const {
@@ -86,7 +101,7 @@ namespace Slisp::Lexer {
     Lexer::m_get_escaped(const std::string::const_iterator &it,
                          std::string::const_iterator &prev_it)
     {
-        std::string esc_char;
+        char esc_char;
 
         switch (*it) {
         case '\\':
@@ -128,22 +143,14 @@ namespace Slisp::Lexer {
     Lexer::m_escape_chars_in_str(std::string::const_iterator str_begin,
                                  std::string::const_iterator str_end)
     {
-        if (*(str_end - 1) == '\\') {
-            throw Slisp::Exceptions::UnmatchedQuote {
-                Exceptions::form_error_message("Unmatched quote", m_row, m_col),
-            };
-        }
-
         bool ec_present = false;
         std::string escaped_str;
-        auto it = str_begin + 1;
         auto prev_it = str_begin;
 
-        for (; it != str_end; it++) {
+        for (auto it = str_begin + 1; it != str_end; it++) {
             if (*it != '\\') {
                 continue;
             }
-
             it++;
             std::optional<std::string> escaped_opt = m_get_escaped(it, prev_it);
             if (escaped_opt) {
@@ -165,9 +172,9 @@ namespace Slisp::Lexer {
         constexpr auto is_string_end = [] (char c) {
             return c == '\n' || c == '"';
         };
-        auto literal_end = std::find_if(m_it + 1, m_input.cend(), is_string_end);
+        auto str_literal_end = std::find_if(m_it + 1, m_input.cend(), is_string_end);
 
-        if (*literal_end != '"') {
+        if (*str_literal_end != '"' || *(str_literal_end - 1) == '\\') {
             throw Slisp::Exceptions::UnmatchedQuote {
                 Exceptions::form_error_message("Unmatched quote", m_row, m_col),
             };
@@ -176,10 +183,10 @@ namespace Slisp::Lexer {
         Lexeme out {
             m_row,
             m_col,
-            m_escape_chars_in_str(m_it, literal_end + 1),
+            m_escape_chars_in_str(m_it, str_literal_end + 1),
         };
 
-        std::size_t len = std::distance(m_it, literal_end) + 1;
+        std::size_t len = std::distance(m_it, str_literal_end) + 1;
         m_col += len;
         m_it += len;
 

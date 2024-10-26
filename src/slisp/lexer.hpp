@@ -14,8 +14,12 @@ namespace Slisp::Lexer {
         LexemeValue(const std::string str);
 
         bool operator==(const std::string &rhs) const;
-        friend std::ostream &operator<<(std::ostream &os, const LexemeValue &lv);
 
+        friend std::ostream
+        &operator<<(std::ostream &os, const LexemeValue &lv);
+
+        bool owns() const;
+        const std::variant<std::string, std::string_view> &access() const;
         const char *c_str() const;
     private:
         bool m_owns;
