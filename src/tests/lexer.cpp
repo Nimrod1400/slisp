@@ -153,10 +153,11 @@ TEST_CASE("Lexing atoms") {
 }
 
 TEST_CASE("Lexing erronous strings") {
-    SECTION("Wrong from the start") {
+    SECTION("First lexeme is erronoues string") {
         std::vector<std::string> inputs = {
             R"(")",
             R"( " )",
+            R"(" \")"
         };
 
         for (const auto &input : inputs) {
@@ -164,7 +165,7 @@ TEST_CASE("Lexing erronous strings") {
         }
     }
 
-    SECTION("Wrong later") {
+    SECTION("Second lexeme is erronoues string") {
         std::vector<std::string> inputs = {
             R"(text ")",
             R"(text " )",
@@ -173,6 +174,7 @@ TEST_CASE("Lexing erronous strings") {
 
         for (const auto &input : inputs) {
             Lexer lexer { input };
+            lexer.read_lexeme();
             CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::UnmatchedQuote);
         }
     }
