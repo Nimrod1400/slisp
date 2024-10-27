@@ -223,3 +223,58 @@ TEST_CASE("Lexing erronous strings") {
         }
     }
 }
+
+TEST_CASE("Lexing list reversing procedure") {
+    Bundle bundle = {
+        {
+            ";; This procedure reverses list.\n"
+            "(define (reverse-list lst)\n"
+            " (define (iter rest result)\n"
+            "  (cond ((nul? rest) result)\n"
+            "        (else (iter (cdr rest) (cons (car rest) result)))\n"
+            "   (iter lst '()))))\n",
+            {
+                ";; This procedure reverses list.",
+                "(", "define", "(", "reverse-list", "lst", ")",
+                "(", "define", "(", "iter", "rest", "result", ")",
+                "(", "cond", "(", "(", "nul?", "rest", ")", "result", ")",
+                "(", "else", "(", "iter", "(", "cdr", "rest", ")", "(", "cons", "(", "car", "rest", ")", "result", ")", ")", ")",
+                "(", "iter", "lst", "'", "(", ")", ")", ")", ")", ")",  
+            }
+        }
+    };
+
+    for (const auto &pair : bundle) {
+        Lexer lexer { pair.first };
+        for (const auto &output : pair.second) {
+          CHECK(lexer.read_lexeme().value == output);
+        }
+
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+    }
+}
+
+TEST_CASE("Lexing string appending") {
+    Bundle bundle = {
+        {
+            "(define (form-greeting-message name) \n"
+            R"((string-append "Oh hello there, ")""\n"
+            "                 name))\n",
+            {
+                "(", "define", "(", "form-greeting-message", "name", ")",
+                "(", "string-append", R"("Oh hello there, ")",
+                "name", ")", ")",
+            }
+
+        }
+    };
+
+    for (const auto &pair : bundle) {
+        Lexer lexer { pair.first };
+        for (const auto &output : pair.second) {
+          CHECK(lexer.read_lexeme().value == output);
+        }
+
+        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+    }
+}
