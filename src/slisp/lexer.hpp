@@ -8,24 +8,28 @@
 #include <variant>
 
 namespace Slisp::Lexer {
+    enum class LexemeType {
+        LParen,
+        RParen,
+        Atom,
+        StringLiteral,
+        Comment,
+    };
+
     class LexemeValue {
     public:
-        LexemeValue(const std::string_view sv);
-        LexemeValue(const std::string str);
+        LexemeValue(const std::string_view &sv, LexemeType lt);
+        LexemeValue(const std::string &str, LexemeType lt);
 
-        bool operator==(const std::string &rhs) const;
+        bool operator==(const LexemeValue &rhs) const;
 
         friend std::ostream
         &operator<<(std::ostream &os, const LexemeValue &lv);
-
-        bool owns() const;
-        const std::variant<std::string, std::string_view> &access() const;
-        const char *c_str() const;
     private:
-        bool m_owns;
+        LexemeType m_lexeme_type;
         std::variant<std::string, std::string_view> m_value;
     };
-    
+
     class Lexeme {
     public:
         Lexeme(std::size_t row, std::size_t col, LexemeValue value);
