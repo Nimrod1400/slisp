@@ -20,7 +20,7 @@ namespace Slisp::Exceptions {
         std::string m_message;
 
     };
-    
+
     class Eof : public Exception {
     public:
         Eof(const std::string &message);
