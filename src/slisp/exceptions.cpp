@@ -12,7 +12,7 @@ namespace Slisp::Exceptions {
     }
 
     SourceCodeException::SourceCodeException(const std::string &message) :
-        m_message { m_message }
+        m_message { message }
     { }
 
     const char* SourceCodeException::what() const noexcept {
