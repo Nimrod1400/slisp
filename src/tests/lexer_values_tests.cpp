@@ -381,7 +381,9 @@ TEST_CASE("Lexing string appending") {
 
         for (const auto &[val, lt] : pair.second) {
             Lexeme l = lexer.read_lexeme();
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            LexemeValue got = l.value;
+            LexemeValue expected = LexemeValue { val, lt };
+            CHECK(got == expected);
         }
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
