@@ -11,15 +11,18 @@ namespace Slisp::Exceptions {
             std::to_string(row);
     }
 
-    Exception::Exception(std::string message) :
-        m_message { std::move(message) } { }
+    SourceCodeException::SourceCodeException(const std::string &message) :
+        m_message { m_message }
+    { }
 
-    const char* Exception::what() const noexcept {
+    const char* SourceCodeException::what() const noexcept {
         return m_message.c_str();
     }
 
-    Eof::Eof(const std::string &message) : Exception { message } { }
+    Eof::Eof(const std::string &message) : SourceCodeException { message }
+    { }
 
     UnmatchedQuote::UnmatchedQuote(const std::string &message) :
-        Exception { message } { }
+        SourceCodeException { message }
+    { }
 }

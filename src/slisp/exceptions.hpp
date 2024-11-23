@@ -10,23 +10,22 @@ namespace Slisp::Exceptions {
                                    std::size_t col,
                                    std::size_t row);
 
-    class Exception : public std::exception {
+    class SourceCodeException : public std::exception {
     public:
-        Exception(std::string message);
+        SourceCodeException(const std::string &message);
 
         const char* what() const noexcept override;
 
     private:
         std::string m_message;
-
     };
 
-    class Eof : public Exception {
+    class Eof : public SourceCodeException {
     public:
         Eof(const std::string &message);
     };
 
-    class UnmatchedQuote : public Exception {
+    class UnmatchedQuote : public SourceCodeException {
     public:
         UnmatchedQuote(const std::string &message);
     };
