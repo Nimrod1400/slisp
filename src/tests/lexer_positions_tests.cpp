@@ -5,7 +5,9 @@
 
 using namespace Slisp::Lexer;
 
-using Bundle = std::vector<std::pair<std::string, std::vector<std::pair<std::size_t, std::size_t>>>>;
+using Position = std::pair<std::size_t, std::size_t>;
+using InputOutputPair = std::pair<std::string, std::vector<Position>>;
+using Bundle = std::vector<InputOutputPair>;
 
 TEST_CASE("Lexemes positions") {
     SECTION("Parenthesis positions") {
@@ -33,8 +35,9 @@ TEST_CASE("Lexemes positions") {
         for (const auto &pair : bundle) {
             Lexer lexer { pair.first };
             for (const auto &[row, col] : pair.second) {
-                CHECK(lexer.read_lexeme().row == row);
-                CHECK(lexer.peek_lexeme().col == col);
+                Lexeme lm = lexer.read_lexeme();
+                CHECK(lm.row == row);
+                CHECK(lm.col == col);
             }
         }
     }
@@ -45,8 +48,18 @@ TEST_CASE("Lexemes positions") {
                 "(define (square x)\n"
                 "\t(* x x))",
                 {
-                    { 1, 1 }, { 1, 2 }, { 1, 9 }, { 1, 10 }, { 1, 17 }, { 1, 18 },
-                    { 2, 2 }, { 2, 3 }, { 2, 5 }, { 2, 7 }, { 2, 8 }, { 2, 9 },
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 9 },
+                    { 1, 10 },
+                    { 1, 17 },
+                    { 1, 18 },
+                    { 2, 2 },
+                    { 2, 3 },
+                    { 2, 5 },
+                    { 2, 7 },
+                    { 2, 8 },
+                    { 2, 9 },
                 }
             },
         };
@@ -54,8 +67,9 @@ TEST_CASE("Lexemes positions") {
         for (const auto &pair : bundle) {
             Lexer lexer { pair.first };
             for (const auto &[row, col] : pair.second) {
-                CHECK(lexer.read_lexeme().row == row);
-                CHECK(lexer.peek_lexeme().col == col);
+                Lexeme lm = lexer.read_lexeme();
+                CHECK(lm.row == row);
+                CHECK(lm.col == col);
             }
         }
     }

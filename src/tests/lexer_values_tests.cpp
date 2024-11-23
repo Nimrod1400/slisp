@@ -22,7 +22,8 @@ TEST_CASE("Lexing empty program") {
     };
 
     for (const auto &input : inputs) {
-        CHECK_THROWS_AS(Lexer { input }, Slisp::Exceptions::Eof);
+        Lexer l { input };
+        CHECK_THROWS_AS(l.read_lexeme(), Slisp::Exceptions::Eof);
     }
 }
 
@@ -257,7 +258,8 @@ TEST_CASE("Lexing erronous strings") {
         };
 
         for (const auto &input : inputs) {
-            CHECK_THROWS_AS(Lexer { input }, Slisp::Exceptions::UnmatchedQuote);
+            Lexer l { input };
+            CHECK_THROWS_AS(l.read_lexeme(), Slisp::Exceptions::UnmatchedQuote);
         }
     }
 
