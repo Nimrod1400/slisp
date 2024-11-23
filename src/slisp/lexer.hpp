@@ -9,6 +9,7 @@
 
 namespace Slisp::Lexer {
     enum class LexemeType {
+        Empty,
         LParen,
         RParen,
         Atom,
@@ -32,6 +33,7 @@ namespace Slisp::Lexer {
 
     class Lexeme {
     public:
+        Lexeme();
         Lexeme(std::size_t row, std::size_t col, LexemeValue value);
 
         std::size_t row;
@@ -44,7 +46,7 @@ namespace Slisp::Lexer {
         Lexer(const std::string &input);
 
         void reset_position();
-        Lexeme peek_lexeme() const;
+        Lexeme peek_lexeme();
         Lexeme read_lexeme();
 
     private:
@@ -54,6 +56,7 @@ namespace Slisp::Lexer {
         const std::string &m_input;
         std::string::const_iterator m_it;
 
+        bool m_no_prev_lexeme;
         Lexeme m_prev_lexeme;
 
         Lexeme m_lexicalize_paren();
@@ -71,4 +74,4 @@ namespace Slisp::Lexer {
     };
 }
 
-#endif //LEXER_HPP_
+#endif // LEXER_HPP_

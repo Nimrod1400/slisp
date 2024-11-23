@@ -55,20 +55,25 @@ namespace Slisp::Lexer {
         }
     }
 
+    Lexeme::Lexeme() :
+        row { 1 },
+        col { 1 },
+        value { LexemeValue { std::string { "" }, LexemeType::Empty } }
+    { }
+
+    Lexeme::Lexeme(std::size_t row, std::size_t col, LexemeValue value) :
+        row { row },
+        col { col },
+        value { value }
+    { }
+
     Lexer::Lexer(const std::string &input) :
         m_row { 1 },
         m_col { 1 },
         m_input { input },
         m_it { m_input.cbegin() },
-        m_prev_lexeme { read_lexeme() }
-    {
-        reset_position();
-    }
-
-    Lexeme::Lexeme(std::size_t row, std::size_t col, LexemeValue value) :
-        row { row },
-        col { col },
-        value { value } { }
+        m_no_prev_lexeme { true }
+    { }
 
     Lexeme Lexer::m_lexicalize_paren() {
         LexemeType lt;
@@ -242,8 +247,13 @@ namespace Slisp::Lexer {
         m_col = 1;
     }
 
-    Lexeme Lexer::peek_lexeme() const {
-        return m_prev_lexeme;
+    Lexeme Lexer::peek_lexeme() {
+        if (m_no_prev_lexeme) {
+            return read_lexeme();
+        }
+        else {
+            return m_prev_lexeme;
+        }
     }
 
     Lexeme Lexer::read_lexeme() {
@@ -271,21 +281,25 @@ namespace Slisp::Lexer {
         case ')': {
             Lexeme out = m_lexicalize_paren();
             m_prev_lexeme = out;
+            m_no_prev_lexeme = false;
             return out;
         }
         case ';': {
             Lexeme out = m_lexicalize_comment();
             m_prev_lexeme = out;
+            m_no_prev_lexeme = false;
             return out;
         }
         case '"': {
             Lexeme out = m_lexicalize_string_literal();
             m_prev_lexeme = out;
+            m_no_prev_lexeme = false;
             return out;
         }
         default: {
             Lexeme out = m_lexicalize_atom();
             m_prev_lexeme = out;
+            m_no_prev_lexeme = false;
             return out;
         }
         }
