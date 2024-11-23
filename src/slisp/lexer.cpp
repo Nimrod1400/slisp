@@ -57,10 +57,10 @@ namespace Slisp::Lexer {
 
     Lexer::Lexer(const std::string &input) :
         m_row { 1 },
-        m_col { 1 }
+        m_col { 1 },
         m_input { input },
         m_it { m_input.cbegin() },
-        m_prev_lexeme { read_lexeme() },
+        m_prev_lexeme { read_lexeme() }
     {
         reset_position();
     }
