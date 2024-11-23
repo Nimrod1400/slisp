@@ -1,9 +1,27 @@
 #include <algorithm>
+#include <stdexcept>
 #include <variant>
 #include "exceptions.hpp"
 #include "lexer.hpp"
 
 namespace Slisp::Lexer {
+    LexemeValue::LexemeValue(LexemeType lt) :
+        m_lexeme_type { lt },
+        m_value { std::string { "" } }
+    {
+        bool empty_value_acceptable = (lt == LexemeType::LParen ||
+                                       lt == LexemeType::RParen ||
+                                       lt == LexemeType::Empty);
+
+        if (!empty_value_acceptable) {
+            throw std::logic_error {
+                "The type of a LexemeValue must be either "
+                "`LParen`, `RParen` or `Empty` in order for "
+                "LexemeValue instance to not have any string representation."
+            };
+        }
+    }
+
     LexemeValue::LexemeValue(const std::string_view &sv, LexemeType lt) :
         m_lexeme_type { lt },
         m_value { sv }
@@ -58,7 +76,7 @@ namespace Slisp::Lexer {
     Lexeme::Lexeme() :
         row { 1 },
         col { 1 },
-        value { LexemeValue { std::string { "" }, LexemeType::Empty } }
+        value { LexemeValue { LexemeType::Empty } }
     { }
 
     Lexeme::Lexeme(std::size_t row, std::size_t col, LexemeValue value) :

@@ -19,6 +19,7 @@ namespace Slisp::Lexer {
 
     class LexemeValue {
     public:
+        explicit LexemeValue(LexemeType lt);
         LexemeValue(const std::string_view &sv, LexemeType lt);
         LexemeValue(const std::string &str, LexemeType lt);
 
