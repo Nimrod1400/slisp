@@ -1,32 +1,45 @@
 #ifndef TYPES_HPP_
 #define TYPES_HPP_
 
+#include <string>
 #include <cstdarg>
 #include <functional>
 
 namespace Slisp::Types {
-    class Value {
+    enum class ValueType {
+        Number,
+        Procedure,
+    };
+
+    class VmObject {
     public:
+        virtual bool is_reachable() const = 0;
+        virtual void mark_reachable() = 0;
+        virtual void mark_unreachable() = 0;
+        virtual ~VmObject() { }
+    };
+
+    class Value : public VmObject {
+    public:
+        virtual ValueType get_tag() const = 0;
         virtual std::string to_string() const = 0;
-        virtual ~Value() { }
     };
 
-    class Datum : public Value {
-    };
-
-    class Number : public Datum {
+    class Number : public Value {
     public:
-        Number() {
-            m_value = 0;
-        }
-        Number(int n) {
-            m_value = n;
-        }
+        Number();
+        Number(int n);
 
-        Number operator+(const Number &n) { return m_value + n.m_value; }
-        Number operator-(const Number &n) { return m_value - n.m_value; }
-        Number operator*(const Number &n) { return m_value * n.m_value; }
-        Number operator/(const Number &n) { return m_value / n.m_value; }
+        bool is_reachable() const override;
+        void mark_reachable() override;
+        void mark_unreachable() override;
+
+        ValueType get_tag() const override;
+
+        Number operator+(const Number &n);
+        Number operator-(const Number &n);
+        Number operator*(const Number &n);
+        Number operator/(const Number &n);
 
         std::string to_string() const override {
             return std::to_string(m_value);
@@ -34,15 +47,25 @@ namespace Slisp::Types {
 
     private:
         int m_value;
+        ValueType m_tag;
+        bool m_reachable;
     };
 
-    class Procedure : public Datum {
+    using SlispFunction = std::function<Value*(const std::vector<Value*>&)>;
+
+    class Procedure : public Value {
     public:
-        Procedure(std::function<Value*(std::vector<Value*>&)> &proc) {
+        Procedure(SlispFunction &proc) {
             m_proc = proc;
         }
 
-        Value* operator()(std::vector<Value*>& args) {
+        bool is_reachable() const override;
+        void mark_reachable() override;
+        void mark_unreachable() override;
+
+        ValueType get_tag() const override;
+
+        Value* operator()(const std::vector<Value*>& args) {
             return m_proc(args);
         }
 
@@ -51,27 +74,37 @@ namespace Slisp::Types {
         }
 
     private:
-        std::function<Value*(std::vector<Value*>&)> m_proc;
+        SlispFunction m_proc;
+
+        ValueType m_tag;
+        bool m_reachable;
     };
 
-    class Pair : public Value {
+    class Cons : public Value {
     public:
-        void set_car(const Value *val);
-        void set_cdr(const Value *val);
+        Cons();
+        Cons(Value* car, Value* cdr = nullptr);
 
-        Pair cons(const Value *val);
+        bool is_reachable() const override;
+        void mark_reachable() override;
+        void mark_unreachable() override;
 
-        Value* car() const;
-        Value* cdr() const;
+        ValueType get_tag() const override;
 
-        std::string to_string() const override {
-            return "(" + m_head->to_string() +
-                " . " + m_tail->to_string();
-        }
+        virtual void set_car(Value *val);
+        virtual void set_cdr(Value *val);
+
+        virtual Value* car() const;
+        virtual Value* cdr() const;
+
+        std::string to_string() const override;
 
     private:
-        Value *m_head;
-        Value *m_tail;
+        Value *m_car;
+        Value *m_cdr;
+
+        ValueType m_tag;
+        bool m_reachable;
     };
 }
 
