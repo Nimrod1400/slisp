@@ -24,7 +24,7 @@ namespace Slisp::VirtualMachine {
 
             Cons* last_cons = m_root;
             while (last_cons) {
-                last_cons = static_cast<Cons*>(m_root->cdr());
+                last_cons = static_cast<Cons*>(last_cons->cdr());
             }
 
             last_cons->set_cdr(new_cons);
@@ -45,9 +45,14 @@ namespace Slisp::VirtualMachine {
             return v;
         }
 
+        ~VirtualMachine();
+
     private:
         Cons *m_objects;
         Cons *m_root;
+
+        void m_delete_objects();
+        void m_delete_root();
     };
 }
 
