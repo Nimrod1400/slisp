@@ -1,6 +1,7 @@
 #ifndef VM_HPP_
 #define VM_HPP_
 
+#include <utility>
 #include <stack>
 #include <forward_list>
 #include <list>
@@ -15,8 +16,34 @@ namespace Slisp::VirtualMachine {
 
         void mark();
         void sweep();
-        Value* push(Value* o);
-        Value* track(Value* o);
+
+        template <class T, class... Args>
+        T* push(Args&&... args) {
+            T* v = track<T>(std::forward<Args>(args)...);
+            Cons* new_cons = new Cons { v };
+
+            Cons* last_cons = m_root;
+            while (last_cons) {
+                last_cons = static_cast<Cons*>(m_root->cdr());
+            }
+
+            last_cons->set_cdr(new_cons);
+            return v;
+        }
+
+        template <class T, class... Args>
+        T* track(Args&&... args) {
+            T* v = new T(std::forward<Args>(args)...);
+            Cons* new_cons = new Cons { v };
+
+            Cons* last_cons = m_objects;
+            while (last_cons) {
+                last_cons = static_cast<Cons*>(last_cons->cdr());
+            }
+
+            last_cons->set_cdr(new_cons);
+            return v;
+        }
 
     private:
         Cons *m_objects;

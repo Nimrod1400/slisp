@@ -2,7 +2,7 @@
 
 namespace Slisp::VirtualMachine {
     VirtualMachine::VirtualMachine() :
-        m_objects { new Cons { nullptr } },
+        m_objects { nullptr },
         m_root { new Cons { nullptr } }
     { }
 
@@ -34,30 +34,5 @@ namespace Slisp::VirtualMachine {
         for (Cons* cons = m_objects; cons == cons->cdr(); cons != nullptr) {
             cons->car()->mark_unreachable();
         }
-    }
-
-    Value* VirtualMachine::push(Value *o) {
-        Cons* new_cons = new Cons { o };
-        track(o);
-
-        Cons* last_cons = m_root;
-        while (last_cons) {
-            last_cons = static_cast<Cons*>(m_root->cdr());
-        }
-
-        last_cons->set_cdr(new_cons);
-        return o;
-    }
-
-    Value* VirtualMachine::track(Value *o) {
-        Cons* new_cons = new Cons { o };
-
-        Cons* last_cons = m_objects;
-        while (last_cons) {
-            last_cons = static_cast<Cons*>(last_cons->cdr());
-        }
-
-        last_cons->set_cdr(new_cons);
-        return o;
     }
 }
