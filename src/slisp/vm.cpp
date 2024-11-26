@@ -1,7 +1,9 @@
 #include "vm.hpp"
 
 namespace Slisp::VirtualMachine {
-    VirtualMachine::VirtualMachine() :
+    VirtualMachine::VirtualMachine(std::size_t gc_threshold) :
+        m_gc_threshold { gc_threshold },
+        m_tracked_size { 0 },
         m_objects { nullptr },
         m_root { new Cons { nullptr } }
     { }

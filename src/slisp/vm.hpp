@@ -12,7 +12,7 @@ namespace Slisp::VirtualMachine {
 
     class VirtualMachine {
     public:
-        VirtualMachine();
+        VirtualMachine(std::size_t gc_threshold = 1 * 1024 * 1024 * 10);
 
         void mark();
         void sweep();
@@ -42,12 +42,22 @@ namespace Slisp::VirtualMachine {
             }
 
             last_cons->set_cdr(new_cons);
+
+            m_tracked_size += sizeof(T);
+            if (m_tracked_size >= m_gc_threshold) {
+                mark();
+                sweep();
+            }
+
             return v;
         }
 
         ~VirtualMachine();
 
     private:
+        std::size_t m_gc_threshold;
+        std::size_t m_tracked_size;
+
         Cons *m_objects;
         Cons *m_root;
 
