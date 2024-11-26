@@ -11,18 +11,16 @@ namespace Slisp::Types {
         Procedure,
     };
 
-    class VmObject {
+    class Value {
     public:
         virtual bool is_reachable() const = 0;
         virtual void mark_reachable() = 0;
         virtual void mark_unreachable() = 0;
-        virtual ~VmObject() { }
-    };
 
-    class Value : public VmObject {
-    public:
         virtual ValueType get_tag() const = 0;
         virtual std::string to_string() const = 0;
+
+        virtual ~Value() { }
     };
 
     class Number : public Value {

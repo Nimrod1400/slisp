@@ -9,24 +9,18 @@
 namespace Slisp::VirtualMachine {
     using namespace Slisp::Types;
 
-    template <class T>
     class VirtualMachine {
     public:
         VirtualMachine();
 
         void mark();
         void sweep();
-        VmObject* push(VmObject *o);
-        VmObject* track(VmObject *o);
+        Value* push(Value* o);
+        Value* track(Value* o);
 
     private:
-        struct VmObject {
-            T* object;
-            bool is_reachable;
-        };
-
-        std::list<VmObject> *m_objects;
-        std::list<VmObject> *m_root;
+        Cons *m_objects;
+        Cons *m_root;
     };
 }
 
