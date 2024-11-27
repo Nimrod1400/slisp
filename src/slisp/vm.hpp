@@ -23,7 +23,7 @@ namespace Slisp::VirtualMachine {
             Cons* new_cons = new Cons { v };
 
             Cons* last_cons = m_root;
-            while (last_cons) {
+            while (last_cons->cdr()) {
                 last_cons = static_cast<Cons*>(last_cons->cdr());
             }
 
@@ -36,12 +36,17 @@ namespace Slisp::VirtualMachine {
             T* v = new T(std::forward<Args>(args)...);
             Cons* new_cons = new Cons { v };
 
-            Cons* last_cons = m_objects;
-            while (last_cons) {
-                last_cons = static_cast<Cons*>(last_cons->cdr());
+            if (!m_objects) {
+                m_objects = new_cons;
             }
+            else {
+                Cons* last_cons = m_objects;
+                while (last_cons->cdr()) {
+                    last_cons = static_cast<Cons*>(last_cons->cdr());
+                }
 
-            last_cons->set_cdr(new_cons);
+                last_cons->set_cdr(new_cons);
+            }
 
             m_tracked_size += sizeof(T);
             if (m_tracked_size >= m_gc_threshold) {
