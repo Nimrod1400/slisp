@@ -49,7 +49,7 @@ namespace Slisp::Types {
         bool m_reachable;
     };
 
-    using SlispFunction = std::function<Value*(const std::vector<Value*>&)>;
+    using SlispFunction = std::function<Value*(std::vector<Value*>&)>;
 
     class Procedure : public Value {
     public:
@@ -63,7 +63,7 @@ namespace Slisp::Types {
 
         ValueType get_tag() const override;
 
-        Value* operator()(const std::vector<Value*>& args) {
+        Value* operator()(std::vector<Value*>& args) {
             return m_proc(args);
         }
 
@@ -89,11 +89,11 @@ namespace Slisp::Types {
 
         ValueType get_tag() const override;
 
-        virtual void set_car(Value *val);
-        virtual void set_cdr(Value *val);
+        void set_car(Value *val);
+        void set_cdr(Value *val);
 
-        virtual Value* car() const;
-        virtual Value* cdr() const;
+        Value* car() const;
+        Value* cdr() const;
 
         std::string to_string() const override;
 
