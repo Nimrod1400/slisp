@@ -379,7 +379,6 @@ TEST_CASE("Lexing string appending") {
 
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
-        std::cout << pair.first << std::endl;
 
         for (const auto &[val, lt] : pair.second) {
             Lexeme l = lexer.read_lexeme();
