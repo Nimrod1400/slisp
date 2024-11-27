@@ -35,8 +35,10 @@ namespace Slisp::VirtualMachine {
             }
         }
 
-        for (Cons* cons = m_objects; cons == cons->cdr(); cons != nullptr) {
-            cons->car()->mark_unreachable();
+        Cons* cons = m_objects;
+        while (cons) {
+            cons->mark_unreachable();
+            cons = static_cast<Cons*>(cons->cdr());
         }
     }
 
