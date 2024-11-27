@@ -36,14 +36,30 @@ namespace Slisp::Types {
         return Number { m_value / n.m_value };
     }
 
-    bool Cons::is_reachable() const {
+    bool Procedure::is_reachable() const {
         return m_reachable;
+    }
+
+    void Procedure::mark_reachable() {
+        m_reachable = true;
+    }
+
+    void Procedure::mark_unreachable() {
+        m_reachable = false;
+    }
+
+    ValueType Procedure::get_tag() const {
+        return m_tag;
     }
 
     Cons::Cons(Value* car, Value* cdr) :
         m_car { car },
         m_cdr { cdr }
     { }
+
+    bool Cons::is_reachable() const {
+        return m_reachable;
+    }
 
     void Cons::mark_reachable() {
         m_reachable = true;
