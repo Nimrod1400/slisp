@@ -8,6 +8,11 @@ namespace Slisp::VirtualMachine {
         m_root { new Cons { nullptr } }
     { }
 
+    VirtualMachine& VirtualMachine::instance() {
+        static VirtualMachine instance { };
+        return instance;
+    }
+
     void VirtualMachine::mark() {
         m_root->cdr()->mark_reachable();
     }

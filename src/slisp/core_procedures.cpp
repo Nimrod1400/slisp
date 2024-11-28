@@ -1,8 +1,11 @@
 #include "core_procedures.hpp"
+#include "vm.hpp"
 
 namespace Slisp::CoreProcedures {
     using namespace Slisp::Types;
     Value* plus_proc(std::vector<Value*>& args) {
+        auto vm = VirtualMachine::VirtualMachine::instance();
+
         Types::Number* result = vm.push<Types::Number>();
         for (auto const n : args) {
             *result = *result + *static_cast<Types::Number*>(n);
@@ -11,6 +14,8 @@ namespace Slisp::CoreProcedures {
     }
 
     Value* minus_proc(std::vector<Value*>& args) {
+        auto vm = VirtualMachine::VirtualMachine::instance();
+
         Types::Number* result = vm.push<Types::Number>();
         for (auto const n : args) {
             *result = *result - *static_cast<Types::Number*>(n);
@@ -19,6 +24,8 @@ namespace Slisp::CoreProcedures {
     }
 
     Value* multiply_proc(std::vector<Value*>& args) {
+        auto vm = VirtualMachine::VirtualMachine::instance();
+
         Types::Number* result = vm.push<Types::Number>();
         for (auto const n : args) {
             *result = *result * *static_cast<Types::Number*>(n);
@@ -27,6 +34,8 @@ namespace Slisp::CoreProcedures {
     }
 
     Value* divide_proc(std::vector<Value*>& args) {
+        auto vm = VirtualMachine::VirtualMachine::instance();
+
         Types::Number* result = vm.push<Types::Number>();
         for (auto const n : args) {
             *result = *result / *static_cast<Types::Number*>(n);

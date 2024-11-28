@@ -12,7 +12,7 @@ namespace Slisp::VirtualMachine {
 
     class VirtualMachine {
     public:
-        VirtualMachine(std::size_t gc_threshold = 1 * 1024 * 1024 * 10);
+        static VirtualMachine& instance();
 
         void mark();
         void sweep();
@@ -60,6 +60,8 @@ namespace Slisp::VirtualMachine {
         ~VirtualMachine();
 
     private:
+        VirtualMachine(std::size_t gc_threshold = 1024 * 1024 * 8);
+
         std::size_t m_gc_threshold;
         std::size_t m_tracked_size;
 
@@ -68,6 +70,8 @@ namespace Slisp::VirtualMachine {
 
         void m_delete_objects();
         void m_delete_root();
+
+        static VirtualMachine* m_instance;
     };
 }
 
