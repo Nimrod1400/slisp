@@ -11,12 +11,14 @@ ADD_EXECUTABLE(slisp
 	src/slisp/exceptions.cpp
 	src/slisp/types.cpp
 	src/slisp/vm.cpp
+	src/slisp/repl.cpp
 )
 ADD_EXECUTABLE(tests
 	src/slisp/lexer.cpp
 	src/slisp/exceptions.cpp
 	src/slisp/types.cpp
 	src/slisp/vm.cpp
+	src/slisp/repl.cpp
 
 	src/tests/lexer_values_tests.cpp
 	src/tests/lexer_positions_tests.cpp
