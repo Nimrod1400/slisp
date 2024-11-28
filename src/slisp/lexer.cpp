@@ -5,85 +5,36 @@
 #include "lexer.hpp"
 
 namespace Slisp::Lexer {
-    LexemeValue::LexemeValue(LexemeType lt) :
-        m_lexeme_type { lt },
-        m_value { std::string { "" } }
-    {
-        bool empty_value_acceptable = (lt == LexemeType::LParen ||
-                                       lt == LexemeType::RParen ||
-                                       lt == LexemeType::Empty);
-
-        if (!empty_value_acceptable) {
-            throw std::logic_error {
-                "The type of a LexemeValue must be either "
-                "`LParen`, `RParen` or `Empty` in order for "
-                "LexemeValue instance to not have any string representation."
-            };
-        }
-    }
-
-    LexemeValue::LexemeValue(const std::string_view &sv, LexemeType lt) :
-        m_lexeme_type { lt },
-        m_value { sv }
-    { }
-
-    LexemeValue::LexemeValue(const std::string &str, LexemeType lt) :
-        m_lexeme_type { lt },
-        m_value { str }
-    { }
-
-    bool LexemeValue::operator==(const LexemeValue &rhs) const {
-        if (m_lexeme_type != rhs.m_lexeme_type) {
-            return false;
-        }
-
-        std::string_view s1;
-        std::string_view s2;
-
-        try {
-            s1 = std::get<std::string_view>(m_value);
-        }
-        catch (const std::bad_variant_access& e) {
-            s1 = std::get<std::string>(m_value);
-        }
-
-        try {
-            s2 = std::get<std::string_view>(rhs.m_value);
-        }
-        catch (const std::bad_variant_access& e) {
-            s2 = std::get<std::string>(rhs.m_value);
-        }
-
-        return s1 == s2;
-    }
-
-    std::ostream &operator<<(std::ostream &os, const LexemeValue &rhs) {
-        if (rhs.m_lexeme_type == LexemeType::LParen) {
-            return os << "(";
-        }
-        else if (rhs.m_lexeme_type == LexemeType::RParen) {
-            return os << ")";
-        }
-
-        try {
-            return os << std::get<std::string>(rhs.m_value);
-        }
-        catch (const std::bad_variant_access& e) {
-            return os << std::get<std::string>(rhs.m_value);
-        }
-    }
-
     Lexeme::Lexeme() :
         row { 1 },
         col { 1 },
-        value { LexemeValue { LexemeType::Empty } }
+        value { "" },
+        lt { LexemeType::Empty }
     { }
 
-    Lexeme::Lexeme(std::size_t row, std::size_t col, LexemeValue value) :
+    Lexeme::Lexeme(std::string_view value, std::size_t row, std::size_t col) :
         row { row },
         col { col },
         value { value }
-    { }
+    {
+        switch (value[0]) {
+        case '(':
+            lt = LexemeType::LParen;
+            break;
+        case ')':
+            lt = LexemeType::RParen;
+            break;
+        case '"':
+            lt = LexemeType::StringLiteral;
+            break;
+        case ';':
+            lt = LexemeType::Comment;
+            break;
+        default:
+            lt = LexemeType::Atom;
+            break;
+        }
+    }
 
     Lexer::Lexer(const std::string &input) :
         m_row { 1 },
@@ -94,20 +45,10 @@ namespace Slisp::Lexer {
     { }
 
     Lexeme Lexer::m_lexicalize_paren() {
-        LexemeType lt;
-        std::string paren;
-        if (*m_it == '(') {
-            lt = LexemeType::LParen;
-            paren = "(";
-        }
-        else {
-            lt = LexemeType::RParen;
-            paren = ")";
-        }
         Lexeme out {
+            std::string_view { m_it, m_it + 1},
             m_row,
             m_col,
-            LexemeValue { paren, lt },
         };
 
         std::size_t len = 1;
@@ -122,10 +63,9 @@ namespace Slisp::Lexer {
         auto comment_end = std::find(m_it + 1, m_input.end(), '\n');
 
         Lexeme out {
+            std::string_view { m_it, comment_end },
             m_row,
             m_col,
-            LexemeValue { std::string_view { m_it, comment_end },
-                          LexemeType::Comment },
         };
 
         m_it += std::distance(m_it, comment_end);
@@ -135,9 +75,7 @@ namespace Slisp::Lexer {
         return out;
     }
 
-    std::optional<std::string>
-    Lexer::m_get_escaped(const std::string::const_iterator &it,
-                         std::string::const_iterator &prev_it)
+    char Lexer::m_get_escaped(const std::string::const_iterator &it)
     {
         char esc_char;
 
@@ -167,43 +105,45 @@ namespace Slisp::Lexer {
             esc_char = '\f';
             break;
         default:
-            return std::nullopt;
+            esc_char = '\0';
         }
 
-        std::string result { prev_it, it - 1 };
-        result += esc_char;
-        prev_it = it + 1;
-
-        return result;
+        return esc_char;
     }
 
-    LexemeValue
+    std::string_view
     Lexer::m_escape_chars_in_str(std::string::const_iterator str_begin,
                                  std::string::const_iterator str_end)
     {
-        bool ec_present = false;
-        std::string escaped_str;
+        bool contains_esc_ch = false;
         auto prev_it = str_begin;
+        std::string* escaped_str = new std::string { };
 
-        for (auto it = str_begin + 1; it != str_end; it++) {
+        for (auto it = str_begin + 1; it != str_end - 1; it++) {
             if (*it != '\\') {
                 continue;
             }
             it++;
-            std::optional<std::string> escaped_opt = m_get_escaped(it, prev_it);
-            if (escaped_opt) {
-                ec_present = true;
-                escaped_str += *escaped_opt;
+
+            char escaped_char = m_get_escaped(it);
+            if (!escaped_char) {
+                continue;
             }
+
+            contains_esc_ch = true;
+            escaped_str->append(std::string { prev_it, it - 1 });
+            escaped_str->push_back(escaped_char);
+            prev_it = it + 1;
         }
 
-        if (ec_present) {
-            escaped_str += std::string { prev_it, str_end };
-            return LexemeValue { escaped_str, LexemeType::StringLiteral };
+        if (contains_esc_ch) {
+            escaped_str->append(std::string { prev_it, str_end });
+            return std::string_view { escaped_str->begin(),
+                                      escaped_str->end() };
         }
         else {
-            return LexemeValue { std::string_view { str_begin, str_end },
-                                 LexemeType::StringLiteral };
+            delete escaped_str;
+            return std::string_view { str_begin, str_end };
         }
     }
 
@@ -220,9 +160,9 @@ namespace Slisp::Lexer {
         }
 
         Lexeme out {
+            m_escape_chars_in_str(m_it, str_end + 1),
             m_row,
             m_col,
-            m_escape_chars_in_str(m_it, str_end + 1),
         };
 
         std::size_t len = std::distance(m_it, str_end) + 1;
@@ -245,10 +185,9 @@ namespace Slisp::Lexer {
         auto atom_end = std::find_if(m_it + 1, m_input.cend(), is_atom_end);
 
         Lexeme out = {
+            std::string_view { m_it, atom_end },
             m_row,
             m_col,
-            LexemeValue { std::string_view { m_it, atom_end },
-                          LexemeType::Atom },
         };
 
         std::size_t len = std::distance(m_it, atom_end);

@@ -17,29 +17,15 @@ namespace Slisp::Lexer {
         Comment,
     };
 
-    class LexemeValue {
-    public:
-        explicit LexemeValue(LexemeType lt);
-        LexemeValue(const std::string_view &sv, LexemeType lt);
-        LexemeValue(const std::string &str, LexemeType lt);
-
-        bool operator==(const LexemeValue &rhs) const;
-
-        friend std::ostream
-        &operator<<(std::ostream &os, const LexemeValue &lv);
-    private:
-        LexemeType m_lexeme_type;
-        std::variant<std::string, std::string_view> m_value;
-    };
-
     class Lexeme {
     public:
         Lexeme();
-        Lexeme(std::size_t row, std::size_t col, LexemeValue value);
+        Lexeme(std::string_view value, std::size_t row, std::size_t col);
 
         std::size_t row;
         std::size_t col;
-        LexemeValue value;
+        std::string_view value;
+        LexemeType lt;
     };
 
     class Lexer {
@@ -65,11 +51,10 @@ namespace Slisp::Lexer {
         Lexeme m_lexicalize_string_literal();
         Lexeme m_lexicalize_atom();
 
-        std::optional<std::string>
-        m_get_escaped(const std::string::const_iterator &it,
-                      std::string::const_iterator &prev_it);
+        char
+        m_get_escaped(const std::string::const_iterator &it);
 
-        LexemeValue
+        std::string_view
         m_escape_chars_in_str(std::string::const_iterator str_begin,
                               std::string::const_iterator str_end);
     };
