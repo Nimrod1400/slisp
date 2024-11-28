@@ -71,7 +71,7 @@ TEST_CASE("Lexing parenthesis") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &[val, lt] : pair.second) {
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
 
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
@@ -121,7 +121,7 @@ TEST_CASE("Lexing comments") {
     for (const auto &pair : bundle) {
         Lexer lexer { pair.first };
         for (const auto &[val, lt] : pair.second) {
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
 
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
@@ -172,7 +172,7 @@ TEST_CASE("Lexing atoms") {
         Lexer lexer { pair.first };
 
         for (const auto &[val, lt] : pair.second) {
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
@@ -243,7 +243,9 @@ TEST_CASE("Lexing strings") {
         Lexer lexer { pair.first };
 
         for (const auto &[val, lt] : pair.second) {
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            Lexeme got = lexer.read_lexeme();
+            std::string_view expected = std::string_view { val };
+            CHECK(got.value == expected);
         }
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
@@ -348,7 +350,7 @@ TEST_CASE("Lexing list reversing procedure") {
         Lexer lexer { pair.first };
 
         for (const auto &[val, lt] : pair.second) {
-            CHECK(lexer.read_lexeme().value == LexemeValue { val, lt });
+            CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
     }
@@ -382,8 +384,8 @@ TEST_CASE("Lexing string appending") {
 
         for (const auto &[val, lt] : pair.second) {
             Lexeme l = lexer.read_lexeme();
-            LexemeValue got = l.value;
-            LexemeValue expected = LexemeValue { val, lt };
+            std::string_view got = l.value;
+            std::string_view expected { val };
             CHECK(got == expected);
         }
         CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
