@@ -65,7 +65,7 @@ namespace Slisp::VirtualMachine {
 
         while (curr_cons) {
             next_cons = static_cast<Cons*>(curr_cons->cdr());
-            delete curr_cons;
+            delete curr_cons; // SIGSEGV
             curr_cons = next_cons;
         }
     }
