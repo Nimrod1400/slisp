@@ -7,7 +7,7 @@
 
 using namespace Slisp;
 
-VirtualMachine::VirtualMachine vm;
+auto vm = VirtualMachine::VirtualMachine::instance();
 
 Types::Value* plus_func(std::vector<Types::Value*>& args) {
     Types::Number* result = vm.push<Types::Number>();
