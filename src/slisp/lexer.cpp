@@ -9,7 +9,7 @@ namespace Slisp::Lexer {
         row { 1 },
         col { 1 },
         value { "" },
-        lt { LexemeType::Empty }
+        lexeme_type { LexemeType::Empty }
     { }
 
     Lexeme::Lexeme(std::string_view value, std::size_t row, std::size_t col) :
@@ -19,19 +19,19 @@ namespace Slisp::Lexer {
     {
         switch (value[0]) {
         case '(':
-            lt = LexemeType::LParen;
+            lexeme_type = LexemeType::LParen;
             break;
         case ')':
-            lt = LexemeType::RParen;
+            lexeme_type = LexemeType::RParen;
             break;
         case '"':
-            lt = LexemeType::StringLiteral;
+            lexeme_type = LexemeType::StringLiteral;
             break;
         case ';':
-            lt = LexemeType::Comment;
+            lexeme_type = LexemeType::Comment;
             break;
-        default:
-            lt = LexemeType::Atom;
+        defaulexeme_type:
+            lexeme_type = LexemeType::Atom;
             break;
         }
     }

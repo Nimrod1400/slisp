@@ -25,7 +25,7 @@ namespace Slisp::Lexer {
         std::size_t row;
         std::size_t col;
         std::string_view value;
-        LexemeType lt;
+        LexemeType lexeme_type;
     };
 
     class Lexer {
