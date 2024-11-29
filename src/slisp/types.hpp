@@ -9,6 +9,10 @@ namespace Slisp::Types {
     enum class ValueType {
         Number,
         Procedure,
+        Symbol,
+        String,
+        Cons,
+        Bits,
     };
 
     class Value {
@@ -27,6 +31,8 @@ namespace Slisp::Types {
     public:
         Number();
         Number(int n);
+        Number(const std::string& s);
+        Number(const std::string_view& s);
 
         bool is_reachable() const override;
         void mark_reachable() override;
@@ -45,36 +51,28 @@ namespace Slisp::Types {
 
     private:
         int m_value;
-        ValueType m_tag;
         bool m_reachable;
     };
 
-    using SlispFunction = std::function<Value*(std::vector<Value*>&)>;
-
     class Procedure : public Value {
     public:
-        Procedure(SlispFunction &proc) {
-            m_proc = proc;
-        }
-
+        Procedure(std::function<Value*(Value*, Value*...)>& func);
         bool is_reachable() const override;
         void mark_reachable() override;
         void mark_unreachable() override;
 
         ValueType get_tag() const override;
 
-        Value* operator()(std::vector<Value*>& args) {
-            return m_proc(args);
-        }
+        Value* apply(Value* first, Value*... args);
+        Value* apply();
 
         std::string to_string() const {
             return "<Procedure>";
         }
 
     private:
-        SlispFunction m_proc;
+        std::function<Value*(Value*, Value*...)>& m_func;
 
-        ValueType m_tag;
         bool m_reachable;
     };
 
@@ -101,7 +99,6 @@ namespace Slisp::Types {
         Value *m_car;
         Value *m_cdr;
 
-        ValueType m_tag;
         bool m_reachable;
     };
 }
