@@ -1,11 +1,6 @@
 #include <iostream>
 
-#include "exceptions.hpp"
-#include "parser.hpp"
 #include "lexer.hpp"
-#include "vm.hpp"
-#include "types.hpp"
-#include "env.hpp"
 #include <unordered_map>
 
 using namespace Slisp;

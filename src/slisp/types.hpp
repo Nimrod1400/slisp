@@ -29,9 +29,9 @@ namespace Slisp::Types {
     class Number : public Value {
     public:
         Number();
-        Number(std::int_fast64_t n);
+        Number(long long n);
         Number(const std::string& s);
-        Number(const std::string_view& s);
+        Number(std::string_view sv);
 
         bool is_reachable() const override;
         void mark_reachable() override;
@@ -49,7 +49,7 @@ namespace Slisp::Types {
         }
 
     private:
-        std::int_fast64_t m_value;
+        long long m_value;
         bool m_reachable;
     };
 

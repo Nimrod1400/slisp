@@ -4,14 +4,16 @@ namespace Slisp::Types {
     Number::Number() : m_value { 0 }
     { }
 
-    Number::Number(std::int_fast64_t n) : m_value { n }
+    Number::Number(long long n) : m_value { n }
     { }
 
-    Number::Number(const std::string& s) : Number::Number { std::stoi(s) }
+    Number::Number(const std::string& s) :
+        Number::Number { std::stoll(s) }
     { }
 
-    Number::Number(const std::string_view& s) {
-    }
+    Number::Number(std::string_view sv) :
+        Number::Number { std::string { sv } }
+    { }
 
     bool Number::is_reachable() const {
         return m_reachable;
