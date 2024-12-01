@@ -13,7 +13,6 @@ namespace Slisp::Lexer {
         LParen,
         RParen,
         Atom,
-        StringLiteral,
         Comment,
     };
 
@@ -48,15 +47,7 @@ namespace Slisp::Lexer {
 
         Lexeme m_lexicalize_paren();
         Lexeme m_lexicalize_comment();
-        Lexeme m_lexicalize_string_literal();
         Lexeme m_lexicalize_atom();
-
-        char
-        m_get_escaped(const std::string::const_iterator &it);
-
-        std::string_view
-        m_escape_chars_in_str(std::string::const_iterator str_begin,
-                              std::string::const_iterator str_end);
     };
 }
 
