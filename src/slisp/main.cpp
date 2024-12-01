@@ -1,39 +1,20 @@
 #include <iostream>
 
+#include "parser.hpp"
 #include "lexer.hpp"
 #include "vm.hpp"
 #include "types.hpp"
+#include "env.hpp"
 #include <unordered_map>
 
 using namespace Slisp;
 
 auto vm = VirtualMachine::VirtualMachine::instance();
 
-Types::Value* plus_func(std::vector<Types::Value*>& args) {
-    Types::Number* result = vm.push<Types::Number>();
-    for (auto const n : args) {
-        *result = *result + *static_cast<Types::Number*>(n);
-    }
-    return result;
-}
-
 int main(int argc, char **argv) {
-    (void) argc;
-    (void) argv;
+    std::string input = "(1 2 (3 4 (5 6) (7 8 9)))";
 
-    std::function<Types::Value*(std::vector<Types::Value*>&)>
-        plus_function = plus_func;
-
-    auto* n1 = vm.track<Types::Number>(34);
-    auto* n2 = vm.track<Types::Number>(35);
-    auto* cons = vm.push<Types::Cons>(n1, n2);
-    auto* plus_proc = vm.push<Types::Procedure>(plus_function);
-    std::vector<Types::Value*> args { n1, n2 };
-    Types::Number sum_number =
-        *static_cast<Types::Number*>((*plus_proc)(args));
-    cons->set_cdr(nullptr);
-    cons->set_car(nullptr);
-    auto* sum = vm.push<Types::Number>(Types::Number { sum_number });
-
-    std::cout << sum->to_string() << std::endl;
+    Lexer::Lexer lxr { input };
+    Types::Value* val = Parser::parse(lxr);
+    std::cout << val->to_string() << "\n";
 }
