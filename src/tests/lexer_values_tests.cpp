@@ -22,8 +22,8 @@ TEST_CASE("Lexing empty program") {
     };
 
     for (const auto &input : inputs) {
-        Lexer l { input };
-        CHECK_THROWS_AS(l.read_lexeme(), Slisp::Exceptions::Eof);
+        Lexer lexer { input };
+        CHECK(lexer.read_lexeme().value == "");
     }
 }
 
@@ -74,7 +74,7 @@ TEST_CASE("Lexing parenthesis") {
             CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
 
-        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+        CHECK(lexer.read_lexeme().value == "");
     }
 }
 
@@ -124,7 +124,7 @@ TEST_CASE("Lexing comments") {
             CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
 
-        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+        CHECK(lexer.read_lexeme().value == "");
     }
 }
 
@@ -174,7 +174,7 @@ TEST_CASE("Lexing atoms") {
         for (const auto &[val, lt] : pair.second) {
             CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
-        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+        CHECK(lexer.read_lexeme().value == "");
     }
 }
 
@@ -249,6 +249,6 @@ TEST_CASE("Lexing list reversing procedure") {
         for (const auto &[val, lt] : pair.second) {
             CHECK(lexer.read_lexeme().value == std::string_view { val });
         }
-        CHECK_THROWS_AS(lexer.read_lexeme(), Slisp::Exceptions::Eof);
+        CHECK(lexer.read_lexeme().value == "");
     }
 }
