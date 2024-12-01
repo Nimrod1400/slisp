@@ -12,7 +12,6 @@ ADD_EXECUTABLE(slisp
 	src/slisp/types.cpp
 	src/slisp/vm.cpp
 	src/slisp/repl.cpp
-	src/slisp/core_procedures.cpp
 	src/slisp/parser.cpp
 )
 ADD_EXECUTABLE(tests
@@ -21,11 +20,9 @@ ADD_EXECUTABLE(tests
 	src/slisp/types.cpp
 	src/slisp/vm.cpp
 	src/slisp/repl.cpp
-	src/slisp/core_procedures.cpp
 	src/slisp/parser.cpp
 
 	src/tests/lexer_values_tests.cpp
-	src/tests/lexer_positions_tests.cpp
 )
 
 TARGET_COMPILE_FEATURES(slisp PRIVATE cxx_std_20)
