@@ -27,7 +27,7 @@ namespace Slisp::Lexer {
         case ';':
             lexeme_type = LexemeType::Comment;
             break;
-        defaulexeme_type:
+        default:
             lexeme_type = LexemeType::Atom;
             break;
         }
