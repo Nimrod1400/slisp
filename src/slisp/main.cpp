@@ -15,15 +15,7 @@ int main(int argc, char **argv) {
 
     Lexer::Lexer lxr { input };
 
-    bool eof = false;
-    Lexer::Lexeme lm;
-    while (!eof) {
-        try {
-            lm = lxr.read_lexeme();
-            std::cout << lm.value << "\n";
-        }
-        catch (const Exceptions::Eof& e) {
-            eof = true;
-        }
+    while (lxr.read_lexeme().value != "") {
+        std::cout << lxr.peek_lexeme().value << "\n";
     }
 }
