@@ -19,16 +19,6 @@ namespace Slisp::Exceptions {
     private:
         std::string m_message;
     };
-
-    class Eof : public SourceCodeException {
-    public:
-        Eof(const std::string &message);
-    };
-
-    class UnmatchedQuote : public SourceCodeException {
-    public:
-        UnmatchedQuote(const std::string &message);
-    };
 }
 
 #endif // EXCEPTIONS_HPP_

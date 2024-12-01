@@ -86,7 +86,8 @@ namespace Slisp::Lexer {
     Lexeme Lexer::read_lexeme() {
         for (;;) {
             if (m_it == m_input.cend()) {
-                throw Exceptions::Eof { "Uncaught end of file" };
+                char empty_str[1] = "";
+                return Lexeme { std::string_view { empty_str } };
             }
             if (*m_it == ' ' || *m_it == '\t' || *m_it == '\n') {
                 m_it += 1;

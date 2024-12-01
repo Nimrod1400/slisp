@@ -18,11 +18,4 @@ namespace Slisp::Exceptions {
     const char* SourceCodeException::what() const noexcept {
         return m_message.c_str();
     }
-
-    Eof::Eof(const std::string &message) : SourceCodeException { message }
-    { }
-
-    UnmatchedQuote::UnmatchedQuote(const std::string &message) :
-        SourceCodeException { message }
-    { }
 }
