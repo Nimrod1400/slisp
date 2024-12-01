@@ -63,9 +63,6 @@ namespace Slisp::Types {
 
         ValueType get_tag() const override;
 
-        Value* apply(Value* first, Value*... args);
-        Value* apply();
-
         std::string to_string() const {
             return "<Procedure>";
         }
