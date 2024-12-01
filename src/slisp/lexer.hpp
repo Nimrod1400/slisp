@@ -19,7 +19,7 @@ namespace Slisp::Lexer {
     class Lexeme {
     public:
         Lexeme();
-        Lexeme(std::string_view value, std::size_t row, std::size_t col);
+        Lexeme(std::string_view value);
 
         std::string_view value;
         LexemeType lexeme_type;

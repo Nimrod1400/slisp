@@ -10,7 +10,7 @@ namespace Slisp::Lexer {
         lexeme_type { LexemeType::Empty }
     { }
 
-    Lexeme::Lexeme(std::string_view value, std::size_t row, std::size_t col) :
+    Lexeme::Lexeme(std::string_view value) :
         value { value }
     {
         switch (value[0]) {
@@ -39,8 +39,6 @@ namespace Slisp::Lexer {
         std::size_t len = 1;
         Lexeme out {
             std::string_view { m_it, m_it + len },
-            m_row,
-            m_col,
         };
         m_it += len;
         return out;
@@ -50,8 +48,6 @@ namespace Slisp::Lexer {
         auto comment_end = std::find(m_it + 1, m_input.end(), '\n');
         Lexeme out {
             std::string_view { m_it, comment_end },
-            m_row,
-            m_col,
         };
         m_it += std::distance(m_it, comment_end);
         return out;
@@ -71,8 +67,6 @@ namespace Slisp::Lexer {
         auto atom_end = std::find_if(m_it + 1, m_input.cend(), is_atom_end);
         Lexeme out = {
             std::string_view { m_it, atom_end },
-            m_row,
-            m_col,
         };
 
         std::size_t len = std::distance(m_it, atom_end);
@@ -94,13 +88,7 @@ namespace Slisp::Lexer {
             if (m_it == m_input.cend()) {
                 throw Exceptions::Eof { "Uncaught end of file" };
             }
-            if (*m_it == ' ' || *m_it == '\t') {
-                m_col += 1;
-                m_it += 1;
-            }
-            else if (*m_it == '\n') {
-                m_row += 1;
-                m_col = 1;
+            if (*m_it == ' ' || *m_it == '\t' || *m_it == '\n') {
                 m_it += 1;
             }
             else {
