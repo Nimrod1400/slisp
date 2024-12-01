@@ -21,8 +21,6 @@ namespace Slisp::Lexer {
         Lexeme();
         Lexeme(std::string_view value, std::size_t row, std::size_t col);
 
-        std::size_t row;
-        std::size_t col;
         std::string_view value;
         LexemeType lexeme_type;
     };
@@ -31,19 +29,15 @@ namespace Slisp::Lexer {
     public:
         Lexer(const std::string &input);
 
-        void reset_position();
         Lexeme peek_lexeme();
         Lexeme read_lexeme();
 
     private:
-        std::size_t m_row;
-        std::size_t m_col;
-
         const std::string &m_input;
         std::string::const_iterator m_it;
 
-        bool m_no_prev_lexeme;
-        Lexeme m_prev_lexeme;
+        bool m_no_previous_lexeme;
+        Lexeme m_previous_lexeme;
 
         Lexeme m_lexicalize_paren();
         Lexeme m_lexicalize_comment();
