@@ -13,6 +13,7 @@ ADD_EXECUTABLE(slisp
 	src/slisp/vm.cpp
 	src/slisp/repl.cpp
 	src/slisp/core_procedures.cpp
+	src/slisp/parser.cpp
 )
 ADD_EXECUTABLE(tests
 	src/slisp/lexer.cpp
@@ -21,6 +22,7 @@ ADD_EXECUTABLE(tests
 	src/slisp/vm.cpp
 	src/slisp/repl.cpp
 	src/slisp/core_procedures.cpp
+	src/slisp/parser.cpp
 
 	src/tests/lexer_values_tests.cpp
 	src/tests/lexer_positions_tests.cpp
