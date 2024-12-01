@@ -3,16 +3,15 @@
 
 #include <string>
 #include <cstdarg>
+#include <cstdint>
 #include <functional>
 
 namespace Slisp::Types {
-    enum class ValueType {
+    enum class TypeOfValue {
         Number,
         Procedure,
         Symbol,
-        String,
         Cons,
-        Bits,
     };
 
     class Value {
@@ -21,7 +20,7 @@ namespace Slisp::Types {
         virtual void mark_reachable() = 0;
         virtual void mark_unreachable() = 0;
 
-        virtual ValueType get_tag() const = 0;
+        virtual TypeOfValue get_tag() const = 0;
         virtual std::string to_string() const = 0;
 
         virtual ~Value() { }
@@ -30,7 +29,7 @@ namespace Slisp::Types {
     class Number : public Value {
     public:
         Number();
-        Number(int n);
+        Number(std::int_fast64_t n);
         Number(const std::string& s);
         Number(const std::string_view& s);
 
@@ -38,7 +37,7 @@ namespace Slisp::Types {
         void mark_reachable() override;
         void mark_unreachable() override;
 
-        ValueType get_tag() const override;
+        TypeOfValue get_tag() const override;
 
         Number operator+(const Number &n);
         Number operator-(const Number &n);
@@ -50,7 +49,7 @@ namespace Slisp::Types {
         }
 
     private:
-        int m_value;
+        std::int_fast64_t m_value;
         bool m_reachable;
     };
 
@@ -61,7 +60,7 @@ namespace Slisp::Types {
         void mark_reachable() override;
         void mark_unreachable() override;
 
-        ValueType get_tag() const override;
+        TypeOfValue get_tag() const override;
 
         std::string to_string() const {
             return "<Procedure>";
@@ -82,7 +81,7 @@ namespace Slisp::Types {
         void mark_reachable() override;
         void mark_unreachable() override;
 
-        ValueType get_tag() const override;
+        TypeOfValue get_tag() const override;
 
         void set_car(Value *val);
         void set_cdr(Value *val);

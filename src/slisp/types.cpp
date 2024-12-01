@@ -4,7 +4,7 @@ namespace Slisp::Types {
     Number::Number() : m_value { 0 }
     { }
 
-    Number::Number(int n) : m_value { n }
+    Number::Number(std::int_fast64_t n) : m_value { n }
     { }
 
     Number::Number(const std::string& s) : Number::Number { std::stoi(s) }
@@ -25,8 +25,8 @@ namespace Slisp::Types {
         m_reachable = false;
     }
 
-    ValueType Number::get_tag() const {
-        return ValueType::Number;
+    TypeOfValue Number::get_tag() const {
+        return TypeOfValue::Number;
     }
 
     Number Number::operator+(const Number &n) {
@@ -58,8 +58,8 @@ namespace Slisp::Types {
         m_reachable = false;
     }
 
-    ValueType Procedure::get_tag() const {
-        return ValueType::Procedure;
+    TypeOfValue Procedure::get_tag() const {
+        return TypeOfValue::Procedure;
     }
 
     Cons::Cons() { }
@@ -83,8 +83,8 @@ namespace Slisp::Types {
         m_reachable = false;
     }
 
-    ValueType Cons::get_tag() const {
-        return ValueType::Cons;
+    TypeOfValue Cons::get_tag() const {
+        return TypeOfValue::Cons;
     }
 
     void Cons::set_car(Value* val) { m_car = val; }
