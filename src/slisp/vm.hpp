@@ -17,6 +17,7 @@ namespace Slisp::VirtualMachine {
         void mark();
         void sweep();
 
+        // TODO: there is a bug. Somewhere there. Or in VM definition.
         template <class T, class... Args>
         T* push(Args&&... args) {
             T* v = track<T>(std::forward<Args>(args)...);
