@@ -27,13 +27,13 @@ namespace Slisp::Lexer {
 
     class Lexer {
     public:
-        Lexer(const std::string &input);
+        Lexer(const std::string& input);
 
         Lexeme peek_lexeme();
         Lexeme read_lexeme();
 
     private:
-        const std::string &m_input;
+        const std::string& m_input;
         std::string::const_iterator m_it;
 
         bool m_no_previous_lexeme;

@@ -28,7 +28,7 @@ namespace Slisp::Lexer {
         }
     }
 
-    Lexer::Lexer(const std::string &input) :
+    Lexer::Lexer(const std::string& input) :
         m_input { input },
         m_it { m_input.cbegin() },
         m_no_previous_lexeme { true }
@@ -85,8 +85,7 @@ namespace Slisp::Lexer {
     Lexeme Lexer::read_lexeme() {
         for (;;) {
             if (m_it == m_input.cend()) {
-                char empty_str[1] = "";
-                return Lexeme { std::string_view { empty_str } };
+                return Lexeme { };
             }
             if (*m_it == ' ' || *m_it == '\t' || *m_it == '\n') {
                 m_it += 1;
