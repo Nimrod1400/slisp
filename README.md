@@ -1,2 +1,0 @@
-# SLISP
-Simple LISP
