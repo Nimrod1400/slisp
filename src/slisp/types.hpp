@@ -16,10 +16,6 @@ namespace Slisp::Types {
 
     class Value {
     public:
-        virtual bool is_reachable() const = 0;
-        virtual void mark_reachable() = 0;
-        virtual void mark_unreachable() = 0;
-
         virtual TypeOfValue get_tag() const = 0;
         virtual std::string to_string() const = 0;
 
@@ -32,10 +28,6 @@ namespace Slisp::Types {
         Number(long long n);
         Number(const std::string& s);
         Number(std::string_view sv);
-
-        bool is_reachable() const override;
-        void mark_reachable() override;
-        void mark_unreachable() override;
 
         TypeOfValue get_tag() const override;
 
@@ -56,9 +48,6 @@ namespace Slisp::Types {
     class Procedure : public Value {
     public:
         Procedure(std::function<Value*(Value*, Value*...)>& func);
-        bool is_reachable() const override;
-        void mark_reachable() override;
-        void mark_unreachable() override;
 
         TypeOfValue get_tag() const override;
 
@@ -74,12 +63,7 @@ namespace Slisp::Types {
 
     class Cons : public Value {
     public:
-        Cons();
-        Cons(Value* car, Value* cdr = nullptr);
-
-        bool is_reachable() const override;
-        void mark_reachable() override;
-        void mark_unreachable() override;
+        Cons(Value* car = nullptr, Value* cdr = nullptr);
 
         TypeOfValue get_tag() const override;
 

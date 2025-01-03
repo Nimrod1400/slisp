@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include <variant>
-#include "exceptions.hpp"
 #include "lexer.hpp"
 
 namespace Slisp::Lexer {

@@ -8,18 +8,12 @@ SET(CMAKE_COLOR_MAKEFILE OFF)
 ADD_EXECUTABLE(slisp
 	src/slisp/main.cpp
 	src/slisp/lexer.cpp
-	src/slisp/exceptions.cpp
 	src/slisp/types.cpp
-	src/slisp/vm.cpp
-	src/slisp/repl.cpp
 	src/slisp/parser.cpp
 )
 ADD_EXECUTABLE(tests
 	src/slisp/lexer.cpp
-	src/slisp/exceptions.cpp
 	src/slisp/types.cpp
-	src/slisp/vm.cpp
-	src/slisp/repl.cpp
 	src/slisp/parser.cpp
 
 	src/tests/lexer_values_tests.cpp

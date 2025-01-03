@@ -15,18 +15,6 @@ namespace Slisp::Types {
         Number::Number { std::string { sv } }
     { }
 
-    bool Number::is_reachable() const {
-        return m_reachable;
-    }
-
-    void Number::mark_reachable() {
-        m_reachable = true;
-    }
-
-    void Number::mark_unreachable() {
-        m_reachable = false;
-    }
-
     TypeOfValue Number::get_tag() const {
         return TypeOfValue::Number;
     }
@@ -48,42 +36,14 @@ namespace Slisp::Types {
     m_func{ func }
     { }
 
-    bool Procedure::is_reachable() const {
-        return m_reachable;
-    }
-
-    void Procedure::mark_reachable() {
-        m_reachable = true;
-    }
-
-    void Procedure::mark_unreachable() {
-        m_reachable = false;
-    }
-
     TypeOfValue Procedure::get_tag() const {
         return TypeOfValue::Procedure;
     }
-
-    Cons::Cons() { }
 
     Cons::Cons(Value* car, Value* cdr) :
         m_car { car },
         m_cdr { cdr }
     { }
-
-    bool Cons::is_reachable() const {
-        return m_reachable;
-    }
-
-    void Cons::mark_reachable() {
-        m_reachable = true;
-        if(m_car) m_car->mark_reachable();
-        if(m_cdr) m_cdr->mark_reachable();
-    }
-
-    void Cons::mark_unreachable() {
-        m_reachable = false;
-    }
 
     TypeOfValue Cons::get_tag() const {
         return TypeOfValue::Cons;

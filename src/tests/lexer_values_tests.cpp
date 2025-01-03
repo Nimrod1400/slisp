@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../slisp/exceptions.hpp"
 #include "../slisp/lexer.hpp"
 
 using namespace Slisp::Lexer;
