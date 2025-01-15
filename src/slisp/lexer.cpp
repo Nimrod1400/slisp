@@ -5,7 +5,6 @@
 
 namespace Slisp::Lexer {
     Lexeme::Lexeme() :
-        value { "" },
         lexeme_type { LexemeType::Empty }
     { }
 
@@ -31,7 +30,7 @@ namespace Slisp::Lexer {
     Lexer::Lexer(const std::string& input) :
         m_input { input },
         m_it { m_input.cbegin() },
-        m_no_previous_lexeme { true }
+        m_has_previous_lexeme { false }
     { }
 
     Lexeme Lexer::m_lexicalize_paren() {
@@ -74,7 +73,7 @@ namespace Slisp::Lexer {
     }
 
     Lexeme Lexer::peek_lexeme() {
-        if (m_no_previous_lexeme) {
+        if (!m_has_previous_lexeme) {
             return read_lexeme();
         }
         else {
@@ -100,19 +99,19 @@ namespace Slisp::Lexer {
         case ')': {
             Lexeme out = m_lexicalize_paren();
             m_previous_lexeme = out;
-            m_no_previous_lexeme = false;
+            m_has_previous_lexeme = true;
             return out;
         }
         case ';': {
             Lexeme out = m_lexicalize_comment();
             m_previous_lexeme = out;
-            m_no_previous_lexeme = false;
+            m_has_previous_lexeme = true;
             return out;
         }
         default: {
             Lexeme out = m_lexicalize_atom();
             m_previous_lexeme = out;
-            m_no_previous_lexeme = false;
+            m_has_previous_lexeme = true;
             return out;
         }
         }

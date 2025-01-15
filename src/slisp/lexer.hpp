@@ -36,7 +36,7 @@ namespace Slisp::Lexer {
         const std::string& m_input;
         std::string::const_iterator m_it;
 
-        bool m_no_previous_lexeme;
+        bool m_has_previous_lexeme;
         Lexeme m_previous_lexeme;
 
         Lexeme m_lexicalize_paren();
