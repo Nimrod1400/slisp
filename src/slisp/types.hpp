@@ -24,6 +24,7 @@ namespace Slisp::Types {
     class Symbol : public Value {
     public:
         Symbol(const std::string& value);
+        Symbol(const std::string_view value);
 
         TypeOfValue get_type() const override;
         std::string to_string() const override;

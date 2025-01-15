@@ -9,6 +9,10 @@ namespace Slisp::Types {
         : m_str { value }
     { }
 
+    Symbol::Symbol(const std::string_view value)
+        : m_str { value }
+    { }
+
     TypeOfValue Symbol::get_type() const {
         return TypeOfValue::Symbol;
     }

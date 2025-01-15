@@ -1,15 +1,29 @@
 #include "parser.hpp"
 
 namespace Slisp::Parser {
-    Types::Number* parse_number(Lexer::Lexer& lxr) {
+    using namespace Slisp::Types;
+    using namespace Slisp::Lexer;
+
+    Cons* parse_cons(Lexer::Lexer& lxr) {
+        Cons* cons;
     }
 
-    Types::Value* parse_atom(Lexer::Lexer& lxr) {
+    Symbol* parse_symbol(Lexer::Lexer& lxr) {
+        Symbol* result;
+        Lexeme lm = lxr.peek_lexeme();
+
+        result = new Symbol(lm.value);
+
+        return result;
     }
 
-    Types::Cons* parse_cons(Lexer::Lexer& lxr) {
-    }
-
-    Types::Value* parse(Lexer::Lexer& lxr) {
+    Value* parse(Lexer::Lexer& lxr) {
+        Lexeme lm = lxr.read_lexeme();
+        if (lm.lexeme_type == LexemeType::LParen) {
+            return parse_cons(lxr);
+        }
+        else {
+            return parse_symbol(lxr);
+        }
     }
 }
