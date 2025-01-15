@@ -1,43 +1,20 @@
 #include "types.hpp"
 
 namespace Slisp::Types {
-    Number::Number() : m_value { 0 }
+    Procedure::Procedure(std::function<Value*(Cons*)>& func) :
+    m_func { func }
     { }
 
-    Number::Number(long long n) : m_value { n }
+    Symbol::Symbol(const std::string& value)
+        : m_str { value }
     { }
 
-    Number::Number(const std::string& s) :
-        Number::Number { std::stoll(s) }
-    { }
-
-    Number::Number(std::string_view sv) :
-        Number::Number { std::string { sv } }
-    { }
-
-    TypeOfValue Number::get_tag() const {
-        return TypeOfValue::Number;
+    TypeOfValue Symbol::get_type() const {
+        return TypeOfValue::Symbol;
     }
 
-    Number Number::operator+(const Number &n) {
-        return Number { m_value + n.m_value };
-    }
-    Number Number::operator-(const Number &n) {
-        return Number { m_value - n.m_value };
-    }
-    Number Number::operator*(const Number &n) {
-        return Number { m_value * n.m_value };
-    }
-    Number Number::operator/(const Number &n) {
-        return Number { m_value / n.m_value };
-    }
-
-    Procedure::Procedure(std::function<Value*(Value*, Value*...)>& func) :
-    m_func{ func }
-    { }
-
-    TypeOfValue Procedure::get_tag() const {
-        return TypeOfValue::Procedure;
+    std::string Symbol::to_string() const {
+        return m_str;
     }
 
     Cons::Cons(Value* car, Value* cdr) :
@@ -45,7 +22,7 @@ namespace Slisp::Types {
         m_cdr { cdr }
     { }
 
-    TypeOfValue Cons::get_tag() const {
+    TypeOfValue Cons::get_type() const {
         return TypeOfValue::Cons;
     }
 
@@ -66,5 +43,13 @@ namespace Slisp::Types {
             ")";
 
         return out;
+    }
+
+    TypeOfValue Procedure::get_type() const {
+        return TypeOfValue::Procedure;
+    }
+
+    std::string Procedure::to_string() const {
+        return "<Procedure>";
     }
 }
