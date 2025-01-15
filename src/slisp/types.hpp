@@ -16,6 +16,9 @@ namespace Slisp::Types {
     public:
         virtual TypeOfValue get_type() const = 0;
         virtual std::string to_string() const = 0;
+
+        virtual bool operator==(const Value& other) const = 0;
+
         virtual ~Value() { }
 
         bool reachable;
@@ -25,6 +28,8 @@ namespace Slisp::Types {
     public:
         Symbol(const std::string& value);
         Symbol(const std::string_view value);
+
+        bool operator==(const Value& other) const override;
 
         TypeOfValue get_type() const override;
         std::string to_string() const override;
@@ -36,6 +41,8 @@ namespace Slisp::Types {
     class Cons : public Value {
     public:
         Cons(Value* car = nullptr, Value* cdr = nullptr);
+
+        bool operator==(const Value& other) const override;
 
         TypeOfValue get_type() const override;
         std::string to_string() const override;
@@ -54,7 +61,9 @@ namespace Slisp::Types {
     class Procedure : public Value {
     public:
         Procedure();
-        Procedure(std::function<Value* (Cons*)>& func);
+        Procedure(const std::function<Value* (Cons*)>& func);
+
+        bool operator==(const Value& other) const override;
 
         TypeOfValue get_type() const override;
         std::string to_string() const override;

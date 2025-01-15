@@ -1,10 +1,6 @@
 #include "types.hpp"
 
 namespace Slisp::Types {
-    Procedure::Procedure(std::function<Value*(Cons*)>& func) :
-    m_func { func }
-    { }
-
     Symbol::Symbol(const std::string& value)
         : m_str { value }
     { }
@@ -12,6 +8,15 @@ namespace Slisp::Types {
     Symbol::Symbol(const std::string_view value)
         : m_str { value }
     { }
+
+    bool Symbol::operator==(const Value& other) const {
+        if (get_type() != other.get_type()) {
+            return false;
+        }
+
+        const Symbol* other_symbol = static_cast<const Symbol*>(&other);
+        return m_str == other_symbol->m_str;
+    }
 
     TypeOfValue Symbol::get_type() const {
         return TypeOfValue::Symbol;
@@ -26,6 +31,16 @@ namespace Slisp::Types {
         m_cdr { cdr }
     { }
 
+    bool Cons::operator==(const Value& other) const {
+        if (get_type() != other.get_type()) {
+            return false;
+        }
+
+        const Cons* other_cons = static_cast<const Cons*>(&other);
+        return m_car == other_cons->m_car &&
+            m_cdr == other_cons->m_cdr;
+    }
+
     TypeOfValue Cons::get_type() const {
         return TypeOfValue::Cons;
     }
@@ -39,14 +54,35 @@ namespace Slisp::Types {
     Value* Cons::cdr() const { return m_cdr; }
 
     std::string Cons::to_string() const {
-        std::string out =
-            "(" +
-            m_car->to_string() +
-            " . " +
-            m_cdr->to_string() +
-            ")";
+        std::string out = "(";
+
+        if (m_car == nullptr) {
+            out += "";
+        }
+        else {
+            out += m_car->to_string();
+        }
+
+        if (m_cdr == nullptr) {
+            out += "'()";
+        }
+        else {
+            out += m_cdr->to_string();
+        }
 
         return out;
+    }
+
+    Procedure::Procedure()
+        : Procedure([](Cons* args) { return args; })
+    { }
+
+    Procedure::Procedure(const std::function<Value* (Cons*)>& func)
+        : m_func { func }
+    { }
+
+    bool Procedure::operator==(const Value& other) const {
+        return false;
     }
 
     TypeOfValue Procedure::get_type() const {
