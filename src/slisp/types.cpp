@@ -9,13 +9,8 @@ namespace Slisp::Types {
         : m_str { value }
     { }
 
-    bool Symbol::operator==(const Value& other) const {
-        if (get_type() != other.get_type()) {
-            return false;
-        }
-
-        const Symbol* other_symbol = static_cast<const Symbol*>(&other);
-        return m_str == other_symbol->m_str;
+    bool Symbol::operator==(const Symbol& other) const {
+        return m_str == other.m_str;
     }
 
     TypeOfValue Symbol::get_type() const {
@@ -31,14 +26,9 @@ namespace Slisp::Types {
         m_cdr { cdr }
     { }
 
-    bool Cons::operator==(const Value& other) const {
-        if (get_type() != other.get_type()) {
-            return false;
-        }
-
-        const Cons* other_cons = static_cast<const Cons*>(&other);
-        return m_car == other_cons->m_car &&
-            m_cdr == other_cons->m_cdr;
+    bool Cons::operator==(const Cons& other) const {
+        return m_car == other.m_car &&
+            m_cdr == other.m_cdr;
     }
 
     TypeOfValue Cons::get_type() const {
@@ -81,7 +71,7 @@ namespace Slisp::Types {
         : m_func { func }
     { }
 
-    bool Procedure::operator==(const Value& other) const {
+    bool Procedure::operator==(const Procedure&) const {
         return false;
     }
 
