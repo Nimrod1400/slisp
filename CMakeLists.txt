@@ -17,6 +17,7 @@ ADD_EXECUTABLE(tests
 	src/slisp/parser.cpp
 
 	src/tests/lexer-tests.cpp
+	src/tests/parser-tests.cpp
 )
 
 TARGET_COMPILE_FEATURES(slisp PRIVATE cxx_std_20)

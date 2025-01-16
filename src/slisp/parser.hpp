@@ -5,7 +5,7 @@
 #include "lexer.hpp"
 
 namespace Slisp::Parser {
-    Types::Value* parse(Lexer::Lexer& lxr);
+    Types::Cons* parse(Lexer::Lexer& lxr);
 }
 
 #endif // PARSER_HPP_
