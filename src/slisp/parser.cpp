@@ -38,41 +38,17 @@ namespace Slisp::Parser {
         return result;
     }
 
-    Cons* parse(Lexer::Lexer& lxr) {
+    Value* parse(Lexer::Lexer& lxr) {
         Lexeme lm = lxr.peek_lexeme();
-        Cons* out = new Cons();
-        Cons* last_cons = out;
 
-        if (lm.lexeme_type != LexemeType::Empty) {
-            Value* val;
-
-            if (lm.lexeme_type == LexemeType::LParen) {
-                val = parse_cons(lxr);
-            }
-            else {
-                val = parse_symbol(lxr);
-            }
-
-            last_cons->set_cdr(val);
+        if (lm.lexeme_type == LexemeType::LParen) {
+            return parse_cons(lxr);
         }
-
-        while (lm.lexeme_type != LexemeType::Empty) {
-            Value* val;
-
-            if (lm.lexeme_type == LexemeType::LParen) {
-                val = parse_cons(lxr);
-            }
-            else {
-                val = parse_symbol(lxr);
-            }
-
-            Cons* new_cons = new Cons(val);
-            last_cons->set_cdr(new_cons);
-            last_cons = new_cons;
-
-            lm = lxr.peek_lexeme();
+        else if (lm.lexeme_type == LexemeType::Empty) {
+            return new Cons();
         }
-
-        return out;
+        else {
+            return parse_symbol(lxr);
+        }
     }
 }
