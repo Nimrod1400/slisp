@@ -1,6 +1,6 @@
 - [ ] Macro expansion;
 - [ ] Hygienic macros;
-- [ ] Write tests for a parser;
-- [ ] Write a parser;
+- [X] Write tests for a parser;
+- [X] Write a parser;
 - [ ] Write a virtual machine;
 
