@@ -9,8 +9,18 @@ namespace Slisp::Types {
         : m_str { value }
     { }
 
-    bool Symbol::operator==(const Symbol& other) const {
-        return m_str == other.m_str;
+    bool Symbol::equalp(const Value* other) const {
+        if (!other) {
+            return false;
+        }
+
+        if (get_type() != other->get_type()) {
+            return false;
+        }
+
+        const Symbol *other_s = static_cast<const Symbol*>(other);
+
+        return m_str == other_s->m_str;
     }
 
     TypeOfValue Symbol::get_type() const {
@@ -26,9 +36,28 @@ namespace Slisp::Types {
         m_cdr { cdr }
     { }
 
-    bool Cons::operator==(const Cons& other) const {
-        return m_car == other.m_car &&
-            m_cdr == other.m_cdr;
+    static bool values_equalp(const Value* a, const Value* b) {
+        bool both_nil = !a && !b;
+
+        if (both_nil) {
+            return true;
+        }
+        if (!a || !b) {
+            return false;
+        }
+
+        return a->equalp(b);
+    }
+
+    bool Cons::equalp(const Value* other) const {
+        if (get_type() != other->get_type()) {
+            return false;
+        }
+
+        const Cons *other_c = static_cast<const Cons*>(other);
+
+        return values_equalp(m_car, other_c->m_car) &&
+            values_equalp(m_cdr, other_c->m_cdr);
     }
 
     TypeOfValue Cons::get_type() const {
@@ -47,11 +76,13 @@ namespace Slisp::Types {
         std::string out = "(";
 
         if (m_car == nullptr) {
-            out += "";
+            out += "'()";
         }
         else {
             out += m_car->to_string();
         }
+
+        out += " . ";
 
         if (m_cdr == nullptr) {
             out += "'()";
@@ -59,6 +90,8 @@ namespace Slisp::Types {
         else {
             out += m_cdr->to_string();
         }
+
+        out += ")";
 
         return out;
     }
@@ -71,7 +104,7 @@ namespace Slisp::Types {
         : m_func { func }
     { }
 
-    bool Procedure::operator==(const Procedure&) const {
+    bool Procedure::equalp(const Value*) const {
         return false;
     }
 
