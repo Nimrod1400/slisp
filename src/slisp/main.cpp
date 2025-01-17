@@ -1,16 +1,21 @@
 #include <iostream>
 
 #include "lexer.hpp"
+#include "parser.hpp"
+#include "types.hpp"
+
 #include <unordered_map>
 
 using namespace Slisp;
 
 int main(int argc, char** argv) {
-    std::string input = "(1 2 (3 4 (5 6) (7 8 9)))";
+    (void) argc;
+    (void) argv;
+
+    std::string input = "((1 2) 3 4)";
 
     Lexer::Lexer lxr { input };
+    Types::Value* val = Parser::parse(lxr);
 
-    while (lxr.read_lexeme().lexeme_type != Lexer::LexemeType::Empty) {
-        std::cout << lxr.peek_lexeme().value << "\n";
-    }
+    std::cout << val->to_string() << "\n";
 }
