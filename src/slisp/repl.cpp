@@ -1,6 +1,7 @@
-#include "repl.hpp"
 #include "env.hpp"
+#include "eval.hpp"
 #include "parser.hpp"
+#include "repl.hpp"
 
 namespace Slisp::Repl {
     using namespace Slisp::Types;
@@ -11,13 +12,8 @@ namespace Slisp::Repl {
         return parse(lxr);
     }
 
-    Value* eval(Value* stmt) {
-        Cons* s = static_cast<Cons*>(stmt);
-
-        Procedure* proc = static_cast<Procedure*>(Env::symbol_lookup(static_cast<Symbol*>(s->car())));
-        Cons* args = static_cast<Cons*>(s->cdr());
-
-        return proc->apply(args);
+    Value* eval(Value* expr) {
+        return Eval::eval(expr);
     }
 
     std::string print(Value* val) {

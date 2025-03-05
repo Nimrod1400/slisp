@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "env.hpp"
 #include "repl.hpp"
+#include "eval.hpp"
 
 #include <unordered_map>
 
@@ -15,10 +16,12 @@ int main(int argc, char** argv) {
     (void) argv;
 
     Env::init();
-    std::string input = "(+ 35 34)";
+    std::string input = "(+ 35 (+ 14 21))";
     Lexer::Lexer lxr { input };
 
     auto in = Repl::read(lxr);
     auto computed = Repl::eval(in);
-    std::cout << computed->to_string();
+    auto out = Repl::print(computed);
+
+    std::cout << out;
 }

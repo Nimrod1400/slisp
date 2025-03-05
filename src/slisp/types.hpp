@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <functional>
 
+#include "lexer.hpp"
+
 namespace Slisp::Types {
     enum class TypeOfValue {
         Symbol,
@@ -54,7 +56,7 @@ namespace Slisp::Types {
         Number* operator*(const Number* rhs);
         Number* operator/(const Number* rhs);
 
-        static bool numberp();
+        static bool numberp(const Lexer::Lexeme& lm);
 
     private:
         int m_number;

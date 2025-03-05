@@ -1,4 +1,6 @@
 #include <list>
+#include <charconv>
+
 #include "parser.hpp"
 
 namespace Slisp::Parser {
@@ -29,13 +31,23 @@ namespace Slisp::Parser {
         return out;
     }
 
-    Symbol* parse_symbol(Lexer::Lexer& lxr) {
-        Symbol* result;
+    Value* parse_atom(Lexer::Lexer& lxr) {
+        Value* out;
         Lexeme lm = lxr.peek_lexeme();
 
-        result = new Symbol(lm.value);
+        int n;
+        const char* first = lm.value.data();
+        const char* last = lm.value.data() + lm.value.size();
+        auto [_, ec] = std::from_chars(first, last, n);
 
-        return result;
+        if (ec == std::errc()) {
+            out = new Number(n);
+        }
+        else {
+            out = new Symbol(lm.value);
+        }
+
+        return out;
     }
 
     Value* parse(Lexer::Lexer& lxr) {
@@ -48,7 +60,7 @@ namespace Slisp::Parser {
             return new Cons();
         }
         else {
-            return parse_symbol(lxr);
+            return parse_atom(lxr);
         }
     }
 }

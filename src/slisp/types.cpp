@@ -69,17 +69,6 @@ namespace Slisp::Types {
         return new Number(m_number / rhs->m_number);
     }
 
-    static bool numberp(const std::string& str) {
-        try {
-            std::stoi(str);
-        }
-        catch (...) {
-            return false;
-        }
-
-        return true;
-    }
-
     Cons::Cons(Value* car, Value* cdr) :
         m_car { car },
         m_cdr { cdr }
