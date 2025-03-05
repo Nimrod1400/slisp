@@ -1,12 +1,12 @@
 #include "types.hpp"
 
 namespace Slisp::Types {
-    Symbol::Symbol(const std::string& value)
-        : m_str { value }
+    Symbol::Symbol(const std::string& value) :
+        m_str { value }
     { }
 
-    Symbol::Symbol(const std::string_view value)
-        : m_str { value }
+    Symbol::Symbol(const std::string_view value) :
+        m_str { value }
     { }
 
     bool Symbol::equalp(const Value* other) const {
@@ -18,17 +18,66 @@ namespace Slisp::Types {
             return false;
         }
 
-        const Symbol *other_s = static_cast<const Symbol*>(other);
+        const Symbol* other_s = static_cast<const Symbol*>(other);
 
         return m_str == other_s->m_str;
     }
 
-    TypeOfValue Symbol::get_type() const {
-        return TypeOfValue::Symbol;
-    }
-
     std::string Symbol::to_string() const {
         return m_str;
+    }
+
+    Number::Number(int n) :
+        m_number { n }
+    { }
+
+    Number::Number(const std::string& str) :
+        Number::Number { std::stoi(str) }
+    { }
+
+    bool Number::equalp(const Value* other) const {
+        if (!other) {
+            return false;
+        }
+
+        if (get_type() != other->get_type()) {
+            return false;
+        }
+
+        const Number* other_s = static_cast<const Number*>(other);
+
+        return m_number == other_s->m_number;
+    }
+
+    std::string Number::to_string() const {
+        return std::to_string(m_number);
+    }
+
+    Number* Number::operator+(const Number* rhs) {
+        return new Number(m_number + rhs->m_number);
+    }
+
+    Number* Number::operator-(const Number* rhs) {
+        return new Number(m_number - rhs->m_number);
+    }
+
+    Number* Number::operator*(const Number* rhs) {
+        return new Number(m_number * rhs->m_number);
+    }
+
+    Number* Number::operator/(const Number* rhs) {
+        return new Number(m_number / rhs->m_number);
+    }
+
+    static bool numberp(const std::string& str) {
+        try {
+            std::stoi(str);
+        }
+        catch (...) {
+            return false;
+        }
+
+        return true;
     }
 
     Cons::Cons(Value* car, Value* cdr) :
@@ -37,9 +86,7 @@ namespace Slisp::Types {
     { }
 
     static bool values_equalp(const Value* a, const Value* b) {
-        bool both_nil = !a && !b;
-
-        if (both_nil) {
+        if (!a && !b) {
             return true;
         }
         if (!a || !b) {
@@ -54,14 +101,10 @@ namespace Slisp::Types {
             return false;
         }
 
-        const Cons *other_c = static_cast<const Cons*>(other);
+        const Cons* other_c = static_cast<const Cons*>(other);
 
         return values_equalp(m_car, other_c->m_car) &&
             values_equalp(m_cdr, other_c->m_cdr);
-    }
-
-    TypeOfValue Cons::get_type() const {
-        return TypeOfValue::Cons;
     }
 
     void Cons::set_car(Value* val) { m_car = val; }
@@ -108,11 +151,11 @@ namespace Slisp::Types {
         return false;
     }
 
-    TypeOfValue Procedure::get_type() const {
-        return TypeOfValue::Procedure;
-    }
-
     std::string Procedure::to_string() const {
         return "<Procedure>";
+    }
+
+    Value* Procedure::apply(Cons* args) {
+        return m_func(args);
     }
 }

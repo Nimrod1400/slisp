@@ -3,6 +3,8 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include "types.hpp"
+#include "env.hpp"
+#include "repl.hpp"
 
 #include <unordered_map>
 
@@ -12,10 +14,11 @@ int main(int argc, char** argv) {
     (void) argc;
     (void) argv;
 
-    std::string input = "((1 2) 3 4)";
-
+    Env::init();
+    std::string input = "(+ 35 34)";
     Lexer::Lexer lxr { input };
-    Types::Value* val = Parser::parse(lxr);
 
-    std::cout << val->to_string() << "\n";
+    auto in = Repl::read(lxr);
+    auto computed = Repl::eval(in);
+    std::cout << computed->to_string();
 }
