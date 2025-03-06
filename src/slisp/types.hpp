@@ -18,6 +18,10 @@ namespace Slisp::Types {
     class Value {
     public:
         virtual TypeOfValue get_type() const = 0;
+
+        template <typename T>
+        T* as();
+
         virtual std::string to_string() const = 0;
 
         virtual bool equalp(const Value* other) const = 0;
@@ -74,8 +78,11 @@ namespace Slisp::Types {
         void set_car(Value* val);
         void set_cdr(Value* val);
 
-        Value* car() const;
-        Value* cdr() const;
+        template <typename T>
+        T* car() const;
+
+        template <typename T>
+        T* cdr() const;
 
     private:
         Value* m_car;

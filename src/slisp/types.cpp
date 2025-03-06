@@ -1,6 +1,51 @@
 #include "types.hpp"
 
 namespace Slisp::Types {
+    template <>
+    Value* Value::as<Value>() {
+        return this;
+    }
+
+    template <>
+    Symbol* Value::as<Symbol>() {
+        if (this->get_type() != TypeOfValue::Symbol) {
+            throw std::invalid_argument {
+                "Invalid conversion to `Symbol`."
+            };
+        }
+        return static_cast<Symbol*>(this);
+    }
+
+    template <>
+    Number* Value::as<Number>() {
+        if (this->get_type() != TypeOfValue::Number) {
+            throw std::invalid_argument {
+                "Invalid conversion to `Number`."
+            };
+        }
+        return static_cast<Number*>(this);
+    }
+
+    template <>
+    Cons* Value::as<Cons>() {
+        if (this->get_type() != TypeOfValue::Cons) {
+            throw std::invalid_argument {
+                "Invalid conversion to `Cons`."
+            };
+        }
+        return static_cast<Cons*>(this);
+    }
+
+    template <>
+    Procedure* Value::as<Procedure>() {
+        if (this->get_type() != TypeOfValue::Procedure) {
+            throw std::invalid_argument {
+                "Invalid conversion to `Procedure`."
+            };
+        }
+        return static_cast<Procedure*>(this);
+    }
+
     Symbol::Symbol(const std::string& value) :
         m_str { value }
     { }
@@ -100,9 +145,59 @@ namespace Slisp::Types {
 
     void Cons::set_cdr(Value* val) { m_cdr = val; }
 
-    Value* Cons::car() const { return m_car; }
+    template <>
+    Value* Cons::car<Value>() const { return m_car; }
 
-    Value* Cons::cdr() const { return m_cdr; }
+    template <>
+    Symbol* Cons::car<Symbol>() const {
+        if (!m_car) { return nullptr; }
+        return m_car->as<Symbol>();
+    }
+
+    template <>
+    Number* Cons::car<Number>() const {
+        if (!m_car) { return nullptr; }
+        return m_car->as<Number>();
+    }
+
+    template <>
+    Cons* Cons::car<Cons>() const {
+        if (!m_car) { return nullptr; }
+        return m_car->as<Cons>();
+    }
+
+    template <>
+    Procedure* Cons::car<Procedure>() const {
+        if (!m_car) { return nullptr; }
+        return m_car->as<Procedure>();
+    }
+
+    template <>
+    Value* Cons::cdr<Value>() const { return m_cdr; }
+
+    template <>
+    Symbol* Cons::cdr<Symbol>() const {
+        if (!m_cdr) { return nullptr; }
+        return m_cdr->as<Symbol>();
+    }
+
+    template <>
+    Number* Cons::cdr<Number>() const {
+        if (!m_cdr) { return nullptr; }
+        return m_cdr->as<Number>();
+    }
+
+    template <>
+    Cons* Cons::cdr<Cons>() const {
+        if (!m_cdr) { return nullptr; }
+        return m_cdr->as<Cons>();
+    }
+
+    template <>
+    Procedure* Cons::cdr<Procedure>() const {
+        if (!m_cdr) { return nullptr; }
+        return m_cdr->as<Procedure>();
+    }
 
     std::string Cons::to_string() const {
         std::string out = "(";
