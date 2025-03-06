@@ -9,9 +9,9 @@ namespace Slisp::Eval {
         Cons* ev_args = new Cons();
         Cons* tail = ev_args;
 
-        for (; args != nullptr; args = static_cast<Cons*>(args->cdr())) {
+        for (; args != nullptr; args = args->cdr<Cons>()) {
             Cons* new_tail = new Cons();
-            tail->set_car(eval(args->car()));
+            tail->set_car(eval(args->car<Value>()));
             tail->set_cdr(new_tail);
             tail = new_tail;
         }
@@ -25,9 +25,9 @@ namespace Slisp::Eval {
 
         if (type == TypeOfValue::Cons) {
             Cons* expr_cons = static_cast<Cons*>(expr);
-            Symbol* p_name = static_cast<Symbol*>(expr_cons->car());
+            Symbol* p_name = static_cast<Symbol*>(expr_cons->car<Value>());
             Procedure* p = static_cast<Procedure*>(symbol_lookup(p_name));
-            Cons* args = static_cast<Cons*>(expr_cons->cdr());
+            Cons* args = expr_cons->cdr<Cons>();
 
             out = apply_proc(p, args);
         }

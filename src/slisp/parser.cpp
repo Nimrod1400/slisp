@@ -57,7 +57,7 @@ namespace Slisp::Parser {
             return parse_cons(lxr);
         }
         else if (lm.lexeme_type == LexemeType::Empty) {
-            return new Cons();
+            return nullptr;
         }
         else {
             return parse_atom(lxr);

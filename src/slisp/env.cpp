@@ -32,8 +32,8 @@ namespace Slisp::Env {
         Func plus_func = [](Cons* args) {
             std::vector<Number*> nums;
 
-            for (; args->cdr() != nullptr; args = static_cast<Cons*>(args->cdr())) {
-                nums.push_back(static_cast<Number*>(args->car()));
+            for (; args->cdr<Value>() != nullptr; args = args->cdr<Cons>()) {
+                nums.push_back(static_cast<Number*>(args->car<Value>()));
             }
 
             Number* result = new Number(0);
