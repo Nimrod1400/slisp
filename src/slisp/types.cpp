@@ -53,20 +53,20 @@ namespace Slisp::Types {
         return std::to_string(m_number);
     }
 
-    Number* Number::operator+(const Number* rhs) {
-        return new Number(m_number + rhs->m_number);
+    Number Number::operator+(const Number& rhs) {
+        return Number { m_number + rhs.m_number };
     }
 
-    Number* Number::operator-(const Number* rhs) {
-        return new Number(m_number - rhs->m_number);
+    Number Number::operator-(const Number& rhs) {
+        return Number { m_number - rhs.m_number };
     }
 
-    Number* Number::operator*(const Number* rhs) {
-        return new Number(m_number * rhs->m_number);
+    Number Number::operator*(const Number& rhs) {
+        return Number {m_number * rhs.m_number };
     }
 
-    Number* Number::operator/(const Number* rhs) {
-        return new Number(m_number / rhs->m_number);
+    Number Number::operator/(const Number& rhs) {
+        return Number { m_number / rhs.m_number };
     }
 
     Cons::Cons(Value* car, Value* cdr) :

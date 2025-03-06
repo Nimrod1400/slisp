@@ -51,10 +51,10 @@ namespace Slisp::Types {
         TypeOfValue get_type() const override { return TypeOfValue::Number; }
         std::string to_string() const override;
 
-        Number* operator+(const Number* rhs);
-        Number* operator-(const Number* rhs);
-        Number* operator*(const Number* rhs);
-        Number* operator/(const Number* rhs);
+        Number operator+(const Number& rhs);
+        Number operator-(const Number& rhs);
+        Number operator*(const Number& rhs);
+        Number operator/(const Number& rhs);
 
         static bool numberp(const Lexer::Lexeme& lm);
 
