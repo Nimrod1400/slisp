@@ -5,39 +5,42 @@ namespace Slisp::Eval {
     using namespace Slisp::Types;
     using namespace Slisp::Env;
 
-    static Value* apply_proc(Value* expr) {
-        Cons* e = static_cast<Cons*>(expr);
-        Symbol* proc_name = static_cast<Symbol*>(e->car());
-        Procedure* proc = static_cast<Procedure*>(symbol_lookup(proc_name));
+    static Value* apply_proc(Procedure* proc, Cons* args) {
+        Cons* ev_args = new Cons();
+        Cons* tail = ev_args;
 
-        e = static_cast<Cons*>(e->cdr());
-        Cons* args = new Cons();
-        Cons* last_cons = args;
-
-        for (; e != nullptr; e = static_cast<Cons*>(e->cdr())) {
-            Cons* new_cons = new Cons();
-            last_cons->set_car(eval(e->car()));
-            last_cons->set_cdr(new_cons);
-            last_cons = new_cons;
+        for (; args != nullptr; args = static_cast<Cons*>(args->cdr())) {
+            Cons* new_tail = new Cons();
+            tail->set_car(eval(args->car()));
+            tail->set_cdr(new_tail);
+            tail = new_tail;
         }
 
-        return proc->apply(args);
+        return proc->apply(ev_args);
     }
 
     Value* eval(Value* expr) {
+        Value* out;
         TypeOfValue type = expr->get_type();
 
         if (type == TypeOfValue::Cons) {
-            return apply_proc(expr);
+            Cons* expr_cons = static_cast<Cons*>(expr);
+            Symbol* p_name = static_cast<Symbol*>(expr_cons->car());
+            Procedure* p = static_cast<Procedure*>(symbol_lookup(p_name));
+            Cons* args = static_cast<Cons*>(expr_cons->cdr());
+
+            out = apply_proc(p, args);
         }
         else if (type == TypeOfValue::Cons) {
-            return expr;
+            out = expr;
         }
         else if (type == TypeOfValue::Number) {
-            return expr;
+            out = expr;
         }
         else if (type == TypeOfValue::Procedure) {
-            return expr;
+            out = expr;
         }
+
+        return out;
     }
 } // namespace Slisp::Eval
