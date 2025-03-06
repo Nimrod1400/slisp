@@ -30,11 +30,19 @@ namespace Slisp::Env {
         using Func = std::function<Value*(Cons*)>;
 
         Func plus_func = [](Cons* args) {
-            int x = std::stoi(args->car()->to_string());
-            int y = std::stoi(static_cast<Cons*>(args->cdr())->car()->to_string());
+            std::vector<Number*> nums;
 
-            Symbol* out = new Symbol(std::to_string(x + y));
-            return out;
+            for (; args->cdr() != nullptr; args = static_cast<Cons*>(args->cdr())) {
+                nums.push_back(static_cast<Number*>(args->car()));
+            }
+
+            Number* result = new Number(0);
+
+            for (auto num : nums) {
+                *result = *result + *num;
+            }
+
+            return result;
         };
 
         insert_value("+", new Procedure(plus_func));
