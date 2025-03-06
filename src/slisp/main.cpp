@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     (void) argv;
 
     Env::init();
-    std::string input = "(+ 35 (+ 14 21))";
+    std::string input = "(+ 1 2 (+ pi pi) 4 5)";
     Lexer::Lexer lxr { input };
 
     auto in = Repl::read(lxr);

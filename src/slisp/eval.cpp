@@ -24,12 +24,15 @@ namespace Slisp::Eval {
         TypeOfValue type = expr->get_type();
 
         if (type == TypeOfValue::Cons) {
-            Cons* expr_cons = static_cast<Cons*>(expr);
-            Symbol* p_name = static_cast<Symbol*>(expr_cons->car<Value>());
-            Procedure* p = static_cast<Procedure*>(symbol_lookup(p_name));
-            Cons* args = expr_cons->cdr<Cons>();
+            Symbol* p_name = expr->as<Cons>()->car<Symbol>();
+            Procedure* p = symbol_lookup(p_name)->as<Procedure>();
+            Cons* args = expr->as<Cons>()->cdr<Cons>();
 
             out = apply_proc(p, args);
+        }
+        else if (type == TypeOfValue::Symbol) {
+            Symbol* symbol = expr->as<Symbol>();
+            out = symbol_lookup(symbol);
         }
         else if (type == TypeOfValue::Cons) {
             out = expr;

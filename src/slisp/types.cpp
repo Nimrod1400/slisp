@@ -1,5 +1,7 @@
 #include "types.hpp"
 
+#include <stdexcept>
+
 namespace Slisp::Types {
     template <>
     Value* Value::as<Value>() {

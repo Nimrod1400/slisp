@@ -46,6 +46,7 @@ namespace Slisp::Env {
         };
 
         insert_value("+", new Procedure(plus_func));
+        insert_value("pi", new Number(3));
     }
 
 } // namespace Slisp::Env
