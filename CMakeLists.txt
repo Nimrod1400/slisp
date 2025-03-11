@@ -12,6 +12,7 @@ ADD_EXECUTABLE(slisp
 	src/slisp/parser.cpp
 	src/slisp/eval.cpp
 	src/slisp/env.cpp
+	src/slisp/root_env.cpp
 	src/slisp/repl.cpp
 )
 ADD_EXECUTABLE(tests
@@ -21,6 +22,7 @@ ADD_EXECUTABLE(tests
 	src/slisp/env.cpp
 	src/slisp/repl.cpp
 	src/slisp/eval.cpp
+	src/slisp/root_env.cpp
 
 	src/tests/lexer-tests.cpp
 	src/tests/parser-tests.cpp

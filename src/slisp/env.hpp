@@ -7,11 +7,20 @@
 #include "types.hpp"
 
 namespace Slisp::Env {
-    Types::Value* symbol_lookup(const Types::Symbol* symbol);
+    class Env {
+    public:
+        Env(Env* parent_env = nullptr);
 
-    void insert_value(const Types::Symbol* key, const Types::Value* val);
+        void define(const Types::Symbol* key, Types::Value* val);
+        void define(const std::string& key, Types::Value* val);
 
-    void init();
+        Types::Value* lookup(const Types::Symbol* symbol);
+        Types::Value* lookup(const std::string& symbol);
+
+    private:
+        Env* m_parent;
+        std::unordered_map<std::string, Types::Value*> m_kvs;
+    };
 } // namespace Slisp::Env
 
 #endif // ENV_HPP_
